@@ -1,0 +1,58 @@
+/* ====== СВЕТЛАЯ ТЕМА (тёплая бумага) ====== */
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+
+  --bg:            oklch(0.965 0.012 84);   /* тёплая бумага */
+  --bg-tint:       oklch(0.945 0.016 82);   /* секция-«подложка» */
+  --surface:       oklch(0.985 0.008 86);   /* карточка / лист */
+  --surface-2:     oklch(0.925 0.018 80);   /* плейсхолдер фото */
+
+  --text:          oklch(0.255 0.012 70);   /* тёплый почти-чёрный */
+  --text-soft:     oklch(0.40 0.012 70);
+  --text-muted:    oklch(0.56 0.012 72);
+  --text-faint:    oklch(0.70 0.012 74);
+  --on-accent:     oklch(0.975 0.01 90);
+
+  --line:          oklch(0.86 0.014 80);    /* тонкая линия */
+  --line-strong:   oklch(0.78 0.014 78);
+
+  --accent:        oklch(0.52 0.058 122);   /* оливковый */
+  --accent-soft:   oklch(0.60 0.05 122);
+  --accent-tint:   oklch(0.90 0.03 120);    /* фон-намёк */
+  --accent-contrast: oklch(0.40 0.06 122);
+
+  --overlay:       oklch(0.20 0.01 70 / 0.42); /* затемнение на фото */
+  --shadow-sm: 0 1px 2px oklch(0.25 0.01 70 / 0.06);
+  --shadow-md: 0 12px 40px -16px oklch(0.25 0.02 70 / 0.28);
+  --shadow-lg: 0 30px 80px -30px oklch(0.22 0.02 70 / 0.40);
+}
+
+/* ====== ТЁМНАЯ ТЕМА (зеркальная, тёплый уголь) ====== */
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg:            oklch(0.185 0.008 72);
+  --bg-tint:       oklch(0.225 0.009 72);
+  --surface:       oklch(0.235 0.010 72);
+  --surface-2:     oklch(0.295 0.012 74);
+
+  --text:          oklch(0.925 0.010 84);
+  --text-soft:     oklch(0.80 0.010 82);
+  --text-muted:    oklch(0.64 0.012 80);
+  --text-faint:    oklch(0.48 0.012 78);
+  --on-accent:     oklch(0.16 0.01 70);
+
+  --line:          oklch(0.34 0.012 76);
+  --line-strong:   oklch(0.44 0.014 78);
+
+  --accent:        oklch(0.72 0.072 120);
+  --accent-soft:   oklch(0.66 0.06 120);
+  --accent-tint:   oklch(0.32 0.04 120);
+  --accent-contrast: oklch(0.80 0.07 120);
+
+  --overlay:       oklch(0.10 0.01 70 / 0.50);
+  --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.30);
+  --shadow-md: 0 14px 44px -16px oklch(0 0 0 / 0.55);
+  --shadow-lg: 0 30px 80px -28px oklch(0 0 0 / 0.65);
+}
