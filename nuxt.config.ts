@@ -10,6 +10,10 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
     '@nuxt/image',
+    ['@nuxt/icon', {
+      mode: 'svg',
+      serverBundle: { collections: ['ph'] },
+    }],
     '@pinia/nuxt',
     ['@nuxt/fonts', {
       families: [
@@ -36,6 +40,12 @@ export default defineNuxtConfig({
     '@features': `${root}app/03.features`,
     '@widgets':  `${root}app/04.widgets`,
   },
+
+  components: [
+    { path: '@shared/ui', pathPrefix: false, extensions: ['vue'] },
+    { path: '@widgets', pathPrefix: false, extensions: ['vue'] },
+    { path: '@features', pathPrefix: false, extensions: ['vue'] }
+  ],
 
   css: ['~/assets/styles/main.scss'],
 
