@@ -15,6 +15,8 @@ export default defineNuxtConfig({
       serverBundle: { collections: ['ph'] },
     }],
     '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt',
+    '@nuxtjs/i18n',
     ['@nuxt/fonts', {
       families: [
         {
@@ -32,6 +34,16 @@ export default defineNuxtConfig({
       ],
     }],
   ],
+
+  i18n: {
+    locales: [
+      { code: 'ru', name: 'Русский', file: 'ru.json' },
+      { code: 'en', name: 'English', file: 'en.json' },
+    ],
+    defaultLocale: 'ru',
+    langDir: 'locales',
+    strategy: 'no_prefix',
+  },
 
   // FSD layer aliases — folder numbers kept for IDE sorting, aliases are clean
   alias: {
