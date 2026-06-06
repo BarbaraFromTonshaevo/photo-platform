@@ -1,0 +1,21 @@
+{
+  "logoName": "Barbara Elkina",
+  "logoRole": "Photographer",
+  "logoAriaLabel": "Go to home",
+  "nav": {
+    "about": "About",
+    "portfolio": "Portfolio",
+    "story": "Story",
+    "album": "Album",
+    "contacts": "Contacts"
+  },
+  "navAriaLabel": "Navigation",
+  "langLabel": "Language",
+  "themeToLight": "Light theme",
+  "themeToDark": "Dark theme",
+  "sections": "Sections",
+  "socials": "Socials",
+  "contacts": "Contacts",
+  "allRights": "All rights reserved.",
+  "footerQuote": "Photography is the silence you can see."
+}

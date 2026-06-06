@@ -1,0 +1,21 @@
+{
+  "logoName": "Варвара Елькина",
+  "logoRole": "Фотограф",
+  "logoAriaLabel": "На главную",
+  "nav": {
+    "about": "О себе",
+    "portfolio": "Портфолио",
+    "story": "История",
+    "album": "Альбом",
+    "contacts": "Контакты"
+  },
+  "navAriaLabel": "Навигация",
+  "langLabel": "Язык",
+  "themeToLight": "Светлая тема",
+  "themeToDark": "Тёмная тема",
+  "sections": "Разделы",
+  "socials": "Соцсети",
+  "contacts": "Контакты",
+  "allRights": "Все права защищены.",
+  "footerQuote": "Фотография — это тишина, которую видно."
+}
