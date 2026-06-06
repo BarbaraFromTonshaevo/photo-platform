@@ -6,11 +6,7 @@
     target="_blank"
     rel="noopener noreferrer"
   >
-    <Icon
-      class="btn-social__icon"
-      :name="ICONS[network]"
-      aria-hidden="true"
-    />
+    <Icon class="btn-social__icon" :name="ICONS[network]" aria-hidden="true" />
   </a>
 </template>
 
@@ -19,35 +15,36 @@ type SocialNetwork = 'instagram' | 'telegram' | 'pinterest'
 
 const ICONS: Record<SocialNetwork, string> = {
   instagram: 'ph:instagram-logo',
-  telegram:  'ph:telegram-logo',
-  pinterest: 'ph:pinterest-logo',
+  telegram: 'ph:telegram-logo',
+  pinterest: 'ph:pinterest-logo'
 }
 
-withDefaults(defineProps<{
-  network: SocialNetwork
-  href: string
-  ariaLabel?: string
-}>(), {
-  ariaLabel: undefined,
-})
+withDefaults(
+  defineProps<{
+    network: SocialNetwork
+    href: string
+    ariaLabel?: string
+  }>(),
+  {
+    ariaLabel: undefined
+  }
+)
 </script>
 
 <style lang="scss" scoped>
 .btn-social {
-  --size: 2.75rem;      /* 44px */
+  --size: 2.75rem; /* 44px */
   --icon-size: 1.25rem; /* 20px */
 
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: var(--size);
-  height: var(--size);
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-pill);
-  border: 1px solid var(--line);
-
-  background: var(--surface);
-  color: var(--text-soft);
+  background: transparent;
+  color: inherit;
 
   transition:
     background var(--dur-fast) var(--ease),
@@ -55,14 +52,12 @@ withDefaults(defineProps<{
     color var(--dur-fast) var(--ease);
 
   &__icon {
-    font-size: var(--icon-size);
+    font-size: 18px;
   }
 
   @include hover {
     &:hover {
-      background: var(--text);
-      border-color: var(--text);
-      color: var(--on-accent);
+      background: color-mix(in oklch, currentColor 10%, transparent);
     }
   }
 
