@@ -1,13 +1,7 @@
 <template>
   <div>
-    <header class="header">header</header>
+    <HeaderBase />
     <slot />
-    <footer class="footer">footer</footer>
+    <FooterBase />
   </div>
 </template>
-
-<style lang="scss">
-.footer {
-  color: var(--accent);
-}
-</style>
