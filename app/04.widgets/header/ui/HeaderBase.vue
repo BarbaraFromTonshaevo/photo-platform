@@ -1,0 +1,337 @@
+<template>
+  <header :class="['header', { 'header--scrolled': isScrolled }]" role="banner">
+    <div class="header__inner">
+      <!-- Logo -->
+      <NuxtLink to="/" class="header__logo" :aria-label="t('logoAriaLabel')">
+        <NuxtImg
+          src="/images/logo.png"
+          alt="Logo"
+          width="60"
+          height="60"
+          class="header__logo-avatar"
+          priority
+        />
+        <div class="header__logo-info">
+          <span class="header__logo-name">{{ t('logoName') }}</span>
+          <span class="header__logo-role">{{ t('logoRole') }}</span>
+        </div>
+      </NuxtLink>
+
+      <!-- Navigation -->
+      <nav class="header__nav" :aria-label="t('navAriaLabel')">
+        <NuxtLink
+          v-for="link in siteStore.navLinks"
+          :key="link.to"
+          :to="link.to"
+          class="header__nav-link"
+          active-class="is-active"
+        >
+          {{ t(link.labelKey) }}
+        </NuxtLink>
+      </nav>
+
+      <!-- Right: socials / lang / theme -->
+      <div class="header__actions">
+        <div class="header__socials" aria-label="Socials">
+          <ButtonSocial
+            v-for="social in siteStore.socials"
+            :key="social.network"
+            :href="social.href"
+            :network="social.network"
+            :aria-label="social.label"
+          />
+        </div>
+
+        <span class="header__sep" aria-hidden="true" />
+
+        <div class="header__lang" role="group" :aria-label="t('langLabel')">
+          <button
+            :class="['header__lang-btn', { 'is-active': locale === 'ru' }]"
+            @click="switchLocale('ru')"
+          >
+            RU
+          </button>
+          <span class="header__lang-div" aria-hidden="true">/</span>
+          <button
+            :class="['header__lang-btn', { 'is-active': locale === 'en' }]"
+            @click="switchLocale('en')"
+          >
+            EN
+          </button>
+        </div>
+
+        <span class="header__sep" aria-hidden="true" />
+
+        <button
+          class="header__theme"
+          :aria-label="isDark ? t('themeToLight') : t('themeToDark')"
+          @click="toggleTheme"
+        >
+          <Icon :name="isDark ? 'ph:moon-stars' : 'ph:sun'" aria-hidden="true" />
+        </button>
+      </div>
+    </div>
+  </header>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
+import { useViewerStore } from '@entities/viewer'
+import { useSiteStore } from '@entities/site'
+
+const { t, setLocale: i18nSetLocale } = useI18n()
+const viewerStore = useViewerStore()
+const siteStore = useSiteStore()
+const { isDark, locale } = storeToRefs(viewerStore)
+const { toggleTheme } = viewerStore
+
+// ── Scroll: detect when header leaves the hero section ────────
+const isScrolled = ref(false)
+let scrollHandler: (() => void) | null = null
+
+onMounted(() => {
+  i18nSetLocale(viewerStore.locale)
+
+  scrollHandler = () => {
+    isScrolled.value = window.scrollY > window.innerHeight * 0.85
+  }
+  window.addEventListener('scroll', scrollHandler, { passive: true })
+})
+
+onUnmounted(() => {
+  if (scrollHandler) window.removeEventListener('scroll', scrollHandler)
+})
+
+// ── Language ──────────────────────────────────────────────────
+function switchLocale(code: 'ru' | 'en') {
+  viewerStore.setLocale(code)
+  i18nSetLocale(code)
+}
+</script>
+
+<style lang="scss" scoped>
+.header {
+  // ── CSS-state tokens: hero vs scrolled ──────────────────────
+  --_color: rgba(255, 255, 255, 0.9);
+  --_bg: transparent;
+  --_border: transparent;
+  --_avatar-border: rgba(255, 255, 255, 0.55);
+  --_shadow: none;
+
+  &--scrolled {
+    --_color: var(--text);
+    --_bg: var(--bg);
+    --_border: var(--line);
+    --_avatar-border: var(--line-strong);
+    --_shadow: var(--shadow-sm);
+  }
+
+  // ── Base ────────────────────────────────────────────────────
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: 100;
+  height: var(--header-h);
+  color: var(--_color);
+  // background: var(--_bg);
+  border-bottom: 1px solid var(--_border);
+  box-shadow: var(--_shadow);
+  backdrop-filter: blur(14px);
+  transition:
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+
+  // ── Inner layout ────────────────────────────────────────────
+  &__inner {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding-inline: var(--gutter);
+    max-width: calc(var(--maxw) + var(--gutter) * 2);
+    margin-inline: auto;
+  }
+
+  // ── Logo ────────────────────────────────────────────────────
+  &__logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    text-decoration: none;
+    color: inherit;
+    flex-shrink: 0;
+  }
+
+  &__logo-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-family: var(--font-display);
+    font-size: var(--text-md);
+    font-weight: 500;
+    transition: border-color var(--dur) var(--ease);
+  }
+
+  &__logo-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  &__logo-name {
+    font-family: var(--font-display);
+    font-size: var(--text-base);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: var(--tracking-wide);
+    text-transform: capitalize;
+  }
+
+  &__logo-role {
+    font-family: var(--font-ui);
+    font-size: 0.5rem;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    opacity: 0.55;
+    line-height: 1;
+  }
+
+  // ── Nav ─────────────────────────────────────────────────────
+  &__nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    margin-inline: auto;
+  }
+
+  &__nav-link {
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    letter-spacing: var(--tracking-wide);
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    padding-bottom: 3px;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset-inline: 0;
+      bottom: 0;
+      height: 0.5px;
+      background: currentColor;
+      transform: scaleX(0);
+      transition: transform var(--dur-fast) var(--ease);
+    }
+
+    &:hover::after {
+      transform: scaleX(1);
+    }
+  }
+
+  // ── Actions ─────────────────────────────────────────────────
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    flex-shrink: 0;
+  }
+
+  &__socials {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  &__social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+    opacity: 0.7;
+    transition: opacity var(--dur-fast) var(--ease);
+    font-size: 20px;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &__sep {
+    display: block;
+    width: 1px;
+    height: 18px;
+    background: currentColor;
+    opacity: 0.2;
+  }
+
+  // ── Language switcher ────────────────────────────────────────
+  &__lang {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-ui);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-label);
+  }
+
+  &__lang-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    opacity: 0.45;
+    transition: opacity var(--dur-fast) var(--ease);
+
+    &.is-active {
+      opacity: 1;
+      font-weight: 600;
+    }
+
+    &:hover:not(.is-active) {
+      opacity: 0.75;
+    }
+  }
+
+  &__lang-div {
+    opacity: 0.3;
+    user-select: none;
+  }
+
+  // ── Theme toggle ─────────────────────────────────────────────
+  &__theme {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    background: none;
+    border-radius: var(--radius-pill);
+    border: 1px solid color-mix(in oklch, currentColor 25%, transparent);
+    cursor: pointer;
+    color: inherit;
+    transition: background-color var(--dur-fast) var(--ease);
+    font-size: 16px;
+
+    &:hover {
+      background: color-mix(in oklch, currentColor 10%, transparent);
+    }
+
+    &:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 3px;
+      border-radius: var(--radius-sm);
+    }
+  }
+}
+</style>
