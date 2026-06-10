@@ -1,1 +1,5 @@
 export { default as PageHome } from './ui/PageHome.vue'
+export { default as PageHomeAbout } from './ui/PageHomeAbout.vue'
+export { default as PageHomeAlbum } from './ui/PageHomeAlbum.vue'
+export { default as PageHomeContacts } from './ui/PageHomeContacts.vue'
+export { default as PageHomeHistory } from './ui/PageHomeHistory.vue'
