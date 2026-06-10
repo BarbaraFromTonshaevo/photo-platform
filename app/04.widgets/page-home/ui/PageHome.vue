@@ -1,5 +1,9 @@
 <template>
   <div class="page-home">
-    <PageHomeHero></PageHomeHero>
+    <PageHomeHero />
+    <PageHomeAbout />
+    <PageHomeHistory />
+    <PageHomeAlbum />
+    <PageHomeContacts />
   </div>
 </template>
