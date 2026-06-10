@@ -70,7 +70,7 @@ function animateIn() {
   gsap.fromTo(
     getInfoChildren(),
     { opacity: 0, y: 24 },
-    { opacity: 1, y: 0, duration: 0.65, stagger: 0.1, ease: 'power3.out', clearProps: 'all' },
+    { opacity: 1, y: 0, duration: 0.65, stagger: 0.1, ease: 'power3.out', clearProps: 'all' }
   )
 }
 
@@ -83,7 +83,7 @@ watch(
   (active) => {
     if (active) animateIn()
     else resetInfo()
-  },
+  }
 )
 
 onMounted(() => {
@@ -98,7 +98,7 @@ onMounted(() => {
       x: -halfWidth,
       duration: 40,
       ease: 'none',
-      repeat: -1,
+      repeat: -1
     })
   })
 })
@@ -110,7 +110,7 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .genre-slide {
-  --info-w: clamp(260px, 28vw, 360px);
+  --info-w: clamp(260px, 40vw, 460px);
 
   position: relative;
   display: flex;
@@ -129,6 +129,7 @@ onUnmounted(() => {
     justify-content: center;
     flex-shrink: 0;
     width: var(--info-w);
+    background-image: linear-gradient(to right, #0e0d0c, transparent);
     padding: calc(var(--header-h) + var(--space-7)) var(--space-6) var(--space-8) var(--gutter);
   }
 
@@ -204,8 +205,10 @@ onUnmounted(() => {
   // ── Infinite strip ────────────────────────────────────────────
   &__strip {
     position: absolute;
-    inset-inline-start: var(--info-w);
-    inset-inline-end: 0;
+    // inset-inline-start: var(--info-w);
+    // inset-inline-end: 0;
+    left: 0;
+    right: 0;
     top: 0;
     bottom: 0;
     overflow: hidden;
