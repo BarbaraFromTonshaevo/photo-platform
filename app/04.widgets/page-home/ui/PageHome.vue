@@ -3,6 +3,7 @@
     <PageHomeHero />
     <PageHomeAbout />
     <PageHomeHistory />
+    <PageHomePortfolio />
     <PageHomeAlbum />
     <PageHomeContacts />
   </div>
