@@ -63,7 +63,7 @@ const rootClasses = computed(() => ({
     color: var(--text);
     background: var(--surface);
     border: 1.5px solid var(--line);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-md);
     padding: 14px 16px;
     width: 100%;
     outline: none;
