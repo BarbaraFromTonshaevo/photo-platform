@@ -72,6 +72,10 @@ export default defineNuxtConfig({
       include: [
         '@vue/devtools-core',
         '@vue/devtools-kit',
+        'gsap',
+        'gsap/ScrollTrigger',
+        'swiper/modules',
+        'swiper/vue',
       ],
     },
     css: {
