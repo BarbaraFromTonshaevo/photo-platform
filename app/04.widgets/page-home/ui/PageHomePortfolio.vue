@@ -55,90 +55,9 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { portfolioGenres as genres } from '../config/portfolioGenres'
 
 gsap.registerPlugin(ScrollTrigger)
-
-interface GenrePhoto {
-  src?: string
-  aspectRatio: number
-  alt?: string
-}
-
-interface Genre {
-  index: number
-  title: string
-  description: string
-  to: string
-  photos: GenrePhoto[]
-}
-
-const PLACEHOLDER_PHOTOS: GenrePhoto[] = [
-  { aspectRatio: 0.75 },
-  { aspectRatio: 1.5 },
-  { aspectRatio: 1.0 },
-  { aspectRatio: 0.67 },
-  { aspectRatio: 1.25 },
-  { aspectRatio: 0.8 },
-  { aspectRatio: 1.33 }
-]
-
-const PLACEHOLDER_PHOTOS2: GenrePhoto[] = [
-  { aspectRatio: 1.25 },
-  { aspectRatio: 0.8 },
-  { aspectRatio: 1.33 },
-  { aspectRatio: 0.75 },
-  { aspectRatio: 1.5 },
-  { aspectRatio: 1.0 },
-  { aspectRatio: 0.67 }
-]
-
-const PLACEHOLDER_PHOTOS3: GenrePhoto[] = [
-  { aspectRatio: 0.75 },
-  { aspectRatio: 1.25 },
-  { aspectRatio: 1.5 },
-  { aspectRatio: 0.8 },
-  { aspectRatio: 1.0 },
-  { aspectRatio: 1.33 },
-  { aspectRatio: 0.67 }
-]
-
-const genres: Genre[] = [
-  {
-    index: 1,
-    title: 'Репортаж',
-    description: 'События и живые эмоции без постановки — момент, пойманный таким, какой он есть.',
-    to: '/portfolio/reportage',
-    photos: PLACEHOLDER_PHOTOS
-  },
-  {
-    index: 2,
-    title: 'Студийная',
-    description: 'Свет, фон и характер — портрет в контролируемой тишине студии.',
-    to: '/portfolio/studio',
-    photos: PLACEHOLDER_PHOTOS2
-  },
-  {
-    index: 3,
-    title: 'Творческая',
-    description: 'Образы на грани фотографии и искусства — идея важнее правил.',
-    to: '/portfolio/creative',
-    photos: PLACEHOLDER_PHOTOS
-  },
-  {
-    index: 4,
-    title: 'Свадебная',
-    description: 'Целый день в кадре — от утренних сборов до последнего танца.',
-    to: '/portfolio/wedding',
-    photos: PLACEHOLDER_PHOTOS3
-  },
-  {
-    index: 5,
-    title: 'Детская',
-    description: 'Искренние улыбки и непоседливость — детство, пойманное в свете.',
-    to: '/portfolio/children',
-    photos: PLACEHOLDER_PHOTOS
-  }
-]
 
 const portfolioRef = ref<HTMLElement | null>(null)
 const slidesRef = ref<HTMLElement | null>(null)

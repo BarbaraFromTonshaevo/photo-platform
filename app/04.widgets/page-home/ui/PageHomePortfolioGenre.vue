@@ -21,7 +21,7 @@
           v-for="(photo, i) in loopPhotos"
           :key="i"
           class="genre-slide__photo"
-          :style="{ '--ar': photo.aspectRatio }"
+          :class="{ 'genre-slide__photo--placeholder': !photo.src }"
         >
           <img
             v-if="photo.src"
@@ -42,7 +42,6 @@ import gsap from 'gsap'
 
 export interface GenrePhoto {
   src?: string
-  aspectRatio: number
   alt?: string
 }
 
@@ -57,6 +56,8 @@ const props = defineProps<{
 
 const formattedIndex = computed(() => String(props.index).padStart(2, '0'))
 const loopPhotos = computed(() => [...props.photos, ...props.photos])
+
+const STRIP_SPEED = 100 // px/sec — постоянная скорость ленты независимо от ширины контента
 
 const infoRef = ref<HTMLElement | null>(null)
 const trackRef = ref<HTMLElement | null>(null)
@@ -86,17 +87,33 @@ watch(
   }
 )
 
+// Реальная ширина фото известна только после загрузки <img> — ждём её,
+// чтобы измерить ленту по фактическим (а не предполагаемым) пропорциям
+function waitForImages(container: HTMLElement) {
+  const imgs = Array.from(container.querySelectorAll('img'))
+  return Promise.all(
+    imgs.map(
+      (img) =>
+        img.complete ||
+        new Promise<void>((resolve) => {
+          img.addEventListener('load', () => resolve(), { once: true })
+          img.addEventListener('error', () => resolve(), { once: true })
+        })
+    )
+  )
+}
+
 onMounted(() => {
   // Скрыть неактивные жанры сразу; первый (isActive=true) остаётся видимым
   if (!props.isActive) resetInfo()
 
   if (!trackRef.value) return
-  requestAnimationFrame(() => {
+  waitForImages(trackRef.value).then(() => {
     if (!trackRef.value) return
     const halfWidth = trackRef.value.scrollWidth / 2
     stripTween = gsap.to(trackRef.value, {
       x: -halfWidth,
-      duration: 40,
+      duration: halfWidth / STRIP_SPEED,
       ease: 'none',
       repeat: -1
     })
@@ -218,21 +235,25 @@ onUnmounted(() => {
     display: flex;
     align-items: stretch;
     height: 100%;
-    gap: 2px;
+    gap: var(--space-5);
     will-change: transform;
   }
 
   &__photo {
-    // width = height × aspect-ratio, height is 100dvh inherited from flex parent
-    width: calc(var(--ar, 1.5) * 100dvh);
+    // ширина подстраивается под собственные пропорции img (height: 100%, width: auto)
+    width: fit-content;
     height: 100%;
     flex-shrink: 0;
     overflow: hidden;
     background: #1a1816;
     margin: 0;
 
+    &--placeholder {
+      width: calc(1.5 * 100dvh);
+    }
+
     img {
-      width: 100%;
+      width: auto;
       height: 100%;
       object-fit: cover;
       display: block;
