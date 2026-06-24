@@ -286,8 +286,8 @@ onMounted(() => {
   }
 
   &__price-value {
-    font-family: var(--font-ui);
-    font-size: var(--text-base);
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
     font-weight: 500;
     color: var(--text-soft);
     white-space: nowrap;

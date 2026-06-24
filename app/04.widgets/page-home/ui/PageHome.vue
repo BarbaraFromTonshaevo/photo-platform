@@ -2,8 +2,8 @@
   <div class="page-home">
     <PageHomeHero />
     <PageHomeAbout />
-    <PageHomeHistory />
     <PageHomePortfolio />
+    <PageHomeHistory />
     <PageHomeAlbum />
     <PageHomeContacts />
   </div>

@@ -1,93 +1,97 @@
 <template>
-  <section ref="sectionRef" class="history">
-    <div class="history__inner">
-      <div class="history__head">
-        <div class="history__head-left">
-          <span class="history__label">История</span>
-          <h2 class="history__title">Как я пришла в фотографию</h2>
-        </div>
-        <span class="history__counter">
-          {{ pad(activeIndex + 1) }}&nbsp;/&nbsp;{{ pad(slides.length) }}
-        </span>
-      </div>
-
-      <Swiper
-        :modules="swiperModules"
-        :slides-per-view="1"
-        :speed="700"
-        :mousewheel="{ releaseOnEdges: true }"
-        :keyboard="{ enabled: true }"
-        class="history__swiper"
-        @swiper="onSwiper"
-        @slide-change="onSlideChange"
-      >
-        <SwiperSlide v-for="slide in slides" :key="slide.year">
-          <div class="history__slide">
-            <div class="history__content">
-              <p class="history__year">{{ slide.year }}</p>
-              <h3 class="history__subtitle">{{ slide.subtitle }}</h3>
-              <p class="history__desc">{{ slide.desc }}</p>
+  <section class="history">
+    <div ref="spacerRef" class="history__spacer" :style="{ height: spacerHeight + 'px' }">
+      <div class="history__sticky">
+        <div class="history__inner">
+          <div class="history__head">
+            <div class="history__head-left">
+              <span class="history__label">История</span>
+              <h2 class="history__title">Как я пришла в фотографию</h2>
             </div>
-            <div class="history__photos">
-              <div class="history__photo history__photo--big">
-                <span class="history__tag">Кадр</span>
-              </div>
-              <div class="history__photos-side">
-                <div class="history__photo history__photo--sm">
-                  <span class="history__tag">Кадр</span>
-                </div>
-                <div class="history__photo history__photo--sm">
-                  <span class="history__tag">Кадр</span>
-                </div>
-              </div>
-            </div>
+            <span class="history__counter">
+              {{ pad(activeIndex + 1) }}&nbsp;/&nbsp;{{ pad(slides.length) }}
+            </span>
           </div>
-        </SwiperSlide>
-      </Swiper>
 
-      <div class="history__nav">
-        <ButtonArrow
-          direction="left"
-          :disabled="activeIndex === 0"
-          aria-label="Предыдущий слайд"
-          @click="swiperRef?.slidePrev()"
-        />
-        <div class="history__timeline">
-          <div class="history__tl-track" />
-          <button
-            v-for="(slide, i) in slides"
-            :key="slide.year"
-            class="history__tl-item"
-            :class="{ 'is-active': i === activeIndex }"
-            @click="swiperRef?.slideTo(i)"
+          <Swiper
+            :modules="swiperModules"
+            :slides-per-view="1"
+            :speed="700"
+            :space-between="50"
+            :keyboard="{ enabled: true }"
+            :allow-touch-move="false"
+            class="history__swiper"
+            @swiper="onSwiper"
+            @slide-change="onSlideChange"
+            @slide-change-transition-end="onSlideChangeTransitionEnd"
           >
-            <span class="history__tl-dot" />
-            <span class="history__tl-year">{{ slide.year }}</span>
-          </button>
+            <SwiperSlide v-for="slide in slides" :key="slide.year">
+              <div class="history__slide">
+                <div class="history__content">
+                  <p class="history__year">{{ slide.year }}</p>
+                  <h3 class="history__subtitle">{{ slide.subtitle }}</h3>
+                  <p class="history__desc">{{ slide.desc }}</p>
+                </div>
+                <div class="history__photos">
+                  <div class="history__photo history__photo--big">
+                    <span class="history__tag">Кадр</span>
+                  </div>
+                  <div class="history__photos-side">
+                    <div class="history__photo history__photo--sm">
+                      <span class="history__tag">Кадр</span>
+                    </div>
+                    <div class="history__photo history__photo--sm">
+                      <span class="history__tag">Кадр</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </SwiperSlide>
+          </Swiper>
+
+          <div class="history__nav">
+            <ButtonArrow
+              direction="left"
+              :disabled="activeIndex === 0"
+              aria-label="Предыдущий слайд"
+              @click="goToSlide(activeIndex - 1)"
+            />
+            <div class="history__timeline">
+              <div class="history__tl-track" />
+              <button
+                v-for="(slide, i) in slides"
+                :key="slide.year"
+                class="history__tl-item"
+                :class="{ 'is-active': i === activeIndex }"
+                @click="goToSlide(i)"
+              >
+                <span class="history__tl-dot" />
+                <span class="history__tl-year">{{ slide.year }}</span>
+              </button>
+            </div>
+            <ButtonArrow
+              direction="right"
+              :disabled="activeIndex === slides.length - 1"
+              aria-label="Следующий слайд"
+              @click="goToSlide(activeIndex + 1)"
+            />
+          </div>
         </div>
-        <ButtonArrow
-          direction="right"
-          :disabled="activeIndex === slides.length - 1"
-          aria-label="Следующий слайд"
-          @click="swiperRef?.slideNext()"
-        />
       </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import type { Swiper as SwiperType } from 'swiper'
-import { Mousewheel, Keyboard } from 'swiper/modules'
+import { Keyboard } from 'swiper/modules'
 import 'swiper/css'
 import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { deprecations } from 'sass'
 
-gsap.registerPlugin(ScrollTrigger)
-
-const swiperModules = [Mousewheel, Keyboard]
+const swiperModules = [Keyboard]
 
 const slides = [
   {
@@ -117,41 +121,130 @@ const slides = [
   }
 ]
 
-const sectionRef = ref<HTMLElement | null>(null)
+const spacerRef = ref<HTMLElement | null>(null)
 const swiperRef = ref<SwiperType | null>(null)
 const activeIndex = ref(0)
+const spacerHeight = ref(0)
 
 const pad = (n: number) => String(n).padStart(2, '0')
 
-function animatePhotos(slideEl: Element) {
+function getSlideTargets(slideEl: Element | undefined) {
+  if (!slideEl) return null
   const big = slideEl.querySelector('.history__photo--big')
   const side = slideEl.querySelectorAll('.history__photos-side .history__photo--sm')
+  const year = slideEl.querySelector('.history__year')
+  const subtitle = slideEl.querySelector('.history__subtitle')
+  const desc = slideEl.querySelector('.history__desc')
+  if (!big || !side.length) return null
+  return { big, side, year, subtitle, desc }
+}
 
-  if (!big || !side.length) return
+function hideSlideContent(slideEl: Element | undefined) {
+  const targets = getSlideTargets(slideEl)
+  if (!targets) return
+  gsap.set([targets.big, ...Array.from(targets.side), targets.year, targets.subtitle, targets.desc], { opacity: 0, y: 28 })
+}
 
-  gsap.set([big, ...Array.from(side)], { opacity: 0, y: 28 })
+function revealSlideContent(slideEl: Element | undefined) {
+  const targets = getSlideTargets(slideEl)
+  if (!targets) return
+  const { big, side, year, subtitle, desc } = targets
 
   gsap
     .timeline({ delay: 0.08 })
-    .to(big, { opacity: 1, y: 0, duration: 0.72, ease: 'power3.out' })
+    .to(year, { opacity: 1, y: 0, duration: 0.72, ease: 'power3.out' })
+    .to(subtitle, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, '-=0.4')
+    .to(desc, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, '-=0.4')
+    .to(big, { opacity: 1, y: 0, duration: 0.72, ease: 'power3.out' }, '-=0.6')
     .to(side[0], { opacity: 1, y: 0, duration: 0.58, ease: 'power3.out' }, '-=0.42')
     .to(side[1], { opacity: 1, y: 0, duration: 0.58, ease: 'power3.out' }, '-=0.36')
 }
 
+let isScrollDriven = false
+let hasEntered = false
+let ticking = false
+
+function updateSpacerHeight() {
+  spacerHeight.value = window.innerHeight * slides.length
+}
+
+function scrollToIndex(idx: number) {
+  const spacer = spacerRef.value
+  if (!spacer) return
+  const total = spacer.getBoundingClientRect().height - window.innerHeight
+  if (total <= 0) return
+  const wrapperTop = spacer.getBoundingClientRect().top + window.scrollY
+  const targetY = wrapperTop + (idx / (slides.length - 1)) * total
+  window.scrollTo({ top: targetY, behavior: 'smooth' })
+}
+
+function goToSlide(idx: number) {
+  const swiper = swiperRef.value
+  if (!swiper) return
+  const clamped = Math.min(Math.max(idx, 0), slides.length - 1)
+  swiper.slideTo(clamped)
+}
+
+function updateFromScroll() {
+  const spacer = spacerRef.value
+  const swiper = swiperRef.value
+  if (!spacer || !swiper) return
+
+  const rect = spacer.getBoundingClientRect()
+  const total = rect.height - window.innerHeight
+  if (total <= 0) return
+
+  if (!hasEntered && rect.top <= 0 && rect.bottom > window.innerHeight) {
+    hasEntered = true
+    revealSlideContent(swiper.slides[swiper.activeIndex])
+  }
+
+  const progress = Math.min(Math.max(-rect.top / total, 0), 1)
+  const idx = Math.round(progress * (slides.length - 1))
+
+  if (idx !== swiper.activeIndex) {
+    isScrollDriven = true
+    swiper.slideTo(idx, 400)
+  }
+}
+
+function onScroll() {
+  if (ticking) return
+  ticking = true
+  requestAnimationFrame(() => {
+    updateFromScroll()
+    ticking = false
+  })
+}
+
+function onResize() {
+  updateSpacerHeight()
+}
+
+onMounted(() => {
+  updateSpacerHeight()
+  window.addEventListener('scroll', onScroll, { passive: true })
+  window.addEventListener('resize', onResize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', onScroll)
+  window.removeEventListener('resize', onResize)
+})
+
 function onSwiper(swiper: SwiperType) {
   swiperRef.value = swiper
-
-  ScrollTrigger.create({
-    trigger: sectionRef.value,
-    start: 'top 80%',
-    once: true,
-    onEnter: () => animatePhotos(swiper.slides[swiper.activeIndex])
-  })
 }
 
 function onSlideChange(swiper: SwiperType) {
   activeIndex.value = swiper.activeIndex
-  animatePhotos(swiper.slides[swiper.activeIndex])
+  hideSlideContent(swiper.slides[swiper.activeIndex])
+  if (!isScrollDriven) scrollToIndex(swiper.activeIndex)
+  isScrollDriven = false
+}
+
+function onSlideChangeTransitionEnd(swiper: SwiperType) {
+  revealSlideContent(swiper.slides[swiper.activeIndex])
 }
 </script>
 
@@ -159,10 +252,23 @@ function onSlideChange(swiper: SwiperType) {
 .history {
   background: #f2ede4;
   color: #1c1810;
-  padding: var(--space-10) var(--gutter) var(--space-8);
-  overflow-x: clip;
+
+  &__spacer {
+    position: relative;
+  }
+
+  &__sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: var(--space-10) var(--gutter) var(--space-8);
+    overflow-x: clip;
+  }
 
   &__inner {
+    width: 100%;
     max-width: calc(var(--maxw) + var(--gutter) * 2);
     margin-inline: auto;
     display: flex;
@@ -212,7 +318,6 @@ function onSlideChange(swiper: SwiperType) {
   // ── Swiper ──────────────────────────────────────────────────────────
   &__swiper {
     width: 100%;
-    overflow: visible !important;
   }
 
   &__slide {
