@@ -1,5 +1,5 @@
 <template>
-  <section class="hero">
+  <section ref="heroRef" class="hero">
     <div class="hero__bg" aria-hidden="true">
       <img src="/images/home/hero.jpg" alt="" class="hero__bg-img" />
       <div class="hero__overlay" />
@@ -51,6 +51,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import gsap from 'gsap'
+import { useViewerStore } from '@entities/viewer'
+import { useHeaderZoneObserver } from '~/01.shared/lib/useHeaderZoneObserver'
+
+const viewerStore = useViewerStore()
+const { setForcedHeaderTheme } = viewerStore
 
 const genresRef = ref<HTMLElement | null>(null)
 const headingFirstRef = ref<HTMLElement | null>(null)
@@ -58,6 +63,19 @@ const headingLastRef = ref<HTMLElement | null>(null)
 const badgeRef = ref<HTMLElement | null>(null)
 const contentRef = ref<HTMLElement | null>(null)
 const statsRef = ref<HTMLElement | null>(null)
+const heroRef = ref<HTMLElement | null>(null)
+
+useHeaderZoneObserver(
+    heroRef,
+    () => {
+        console.log('hero enter')
+      setForcedHeaderTheme('dark')
+    },
+    () => {
+        console.log('hero leave')
+      setForcedHeaderTheme(null)
+    }
+)
 
 onMounted(() => {
   const tl = gsap.timeline({ defaults: { ease: 'power3.out', duration: 0.85 } })

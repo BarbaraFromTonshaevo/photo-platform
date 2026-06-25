@@ -1,5 +1,8 @@
 <template>
-  <header :class="['header', { 'header--scrolled': isScrolled }]" role="banner">
+  <header
+    :class="['header', { [`header--forced-theme-${forcedHeaderTheme}`]: forcedHeaderTheme }]"
+    role="banner"
+  >
     <div class="header__inner">
       <!-- Logo -->
       <NuxtLink to="/" class="header__logo" :aria-label="t('logoAriaLabel')">
@@ -75,31 +78,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { onMounted } from 'vue'
 import { useViewerStore } from '@entities/viewer'
 import { useSiteStore } from '@entities/site'
 
 const { t, setLocale: i18nSetLocale } = useI18n()
 const viewerStore = useViewerStore()
 const siteStore = useSiteStore()
-const { isDark, locale } = storeToRefs(viewerStore)
+const { isDark, locale, forcedHeaderTheme } = storeToRefs(viewerStore)
 const { toggleTheme } = viewerStore
-
-// ── Scroll: detect when header leaves the hero section ────────
-const isScrolled = ref(false)
-let scrollHandler: (() => void) | null = null
 
 onMounted(() => {
   i18nSetLocale(viewerStore.locale)
-
-  scrollHandler = () => {
-    isScrolled.value = window.scrollY > window.innerHeight * 0.85
-  }
-  window.addEventListener('scroll', scrollHandler, { passive: true })
-})
-
-onUnmounted(() => {
-  if (scrollHandler) window.removeEventListener('scroll', scrollHandler)
 })
 
 // ── Language ──────────────────────────────────────────────────
@@ -111,18 +101,22 @@ function switchLocale(code: 'ru' | 'en') {
 
 <style lang="scss" scoped>
 .header {
-  // ── CSS-state tokens: hero vs scrolled ──────────────────────
-  --_color: rgba(255, 255, 255, 0.9);
-  --_bg: transparent;
-  --_border: transparent;
-  --_avatar-border: rgba(255, 255, 255, 0.55);
+  // ── CSS-state tokens: forced-theme ──────────────────────
+  --_color: var(--text);
+  --_bg: var(--bg);
+  --_border: var(--line);
   --_shadow: none;
 
-  &--scrolled {
-    --_color: var(--text);
-    --_bg: var(--bg);
-    --_border: var(--line);
-    --_avatar-border: var(--line-strong);
+  &--forced-theme-dark {
+    --_color: oklch(0.925 0.010 84);
+    --_bg: oklch(0.185 0.008 72);
+    --_border: oklch(0.34 0.012 76);
+    --_shadow: var(--shadow-sm);
+  }
+  &--forced-theme-light {
+    --_color: oklch(0.255 0.012 70);
+    --_bg: oklch(0.965 0.012 84);
+    --_border: oklch(0.86 0.014 80);
     --_shadow: var(--shadow-sm);
   }
 
@@ -218,6 +212,7 @@ function switchLocale(code: 'ru' | 'en') {
     color: inherit;
     position: relative;
     padding-bottom: 3px;
+    opacity: 0.85;
 
     &::after {
       content: '';
@@ -229,7 +224,9 @@ function switchLocale(code: 'ru' | 'en') {
       transform: scaleX(0);
       transition: transform var(--dur-fast) var(--ease);
     }
-
+    &:hover{
+        opacity: 1;
+    }
     &:hover::after {
       transform: scaleX(1);
     }

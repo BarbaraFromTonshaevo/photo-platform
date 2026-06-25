@@ -56,12 +56,29 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { portfolioGenres as genres } from '../config/portfolioGenres'
+import { useViewerStore } from '@entities/viewer'
+import { useHeaderZoneObserver } from '~/01.shared/lib/useHeaderZoneObserver'
+
+const viewerStore = useViewerStore()
+const { setForcedHeaderTheme } = viewerStore
 
 gsap.registerPlugin(ScrollTrigger)
 
 const portfolioRef = ref<HTMLElement | null>(null)
 const slidesRef = ref<HTMLElement | null>(null)
 const activeIndex = ref(0)
+
+useHeaderZoneObserver(
+    portfolioRef,
+    () => {
+        console.log('hero enter')
+      setForcedHeaderTheme('dark')
+    },
+    () => {
+        console.log('hero leave')
+      setForcedHeaderTheme(null)
+    }
+)
 
 let tween: gsap.core.Tween | null = null
 

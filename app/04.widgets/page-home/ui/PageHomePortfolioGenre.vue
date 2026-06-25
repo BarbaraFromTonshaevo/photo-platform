@@ -136,6 +136,7 @@ onUnmounted(() => {
   overflow: hidden;
   background: #0e0d0c;
   color: #fff;
+  padding-top: var(--header-h);
 
   // ── Info panel ────────────────────────────────────────────────
   &__info {
@@ -229,6 +230,8 @@ onUnmounted(() => {
     top: 0;
     bottom: 0;
     overflow: hidden;
+    padding-top: var(--header-h);
+
   }
 
   &__track {
