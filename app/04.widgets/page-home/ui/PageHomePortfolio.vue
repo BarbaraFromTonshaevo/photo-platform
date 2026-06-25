@@ -71,11 +71,9 @@ const activeIndex = ref(0)
 useHeaderZoneObserver(
     portfolioRef,
     () => {
-        console.log('hero enter')
       setForcedHeaderTheme('dark')
     },
     () => {
-        console.log('hero leave')
       setForcedHeaderTheme(null)
     }
 )

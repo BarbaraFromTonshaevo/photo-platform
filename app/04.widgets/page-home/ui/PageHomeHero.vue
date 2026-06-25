@@ -68,11 +68,9 @@ const heroRef = ref<HTMLElement | null>(null)
 useHeaderZoneObserver(
     heroRef,
     () => {
-        console.log('hero enter')
       setForcedHeaderTheme('dark')
     },
     () => {
-        console.log('hero leave')
       setForcedHeaderTheme(null)
     }
 )
