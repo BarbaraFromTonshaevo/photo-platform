@@ -16,7 +16,7 @@ export interface SocialLink {
 export interface ContactInfo {
   email: string
   phone: string
-  location: string
+  location: string[]
 }
 
 type FetchStatus = 'idle' | 'loading' | 'success' | 'error'
@@ -37,7 +37,7 @@ const DEFAULT_SOCIALS: SocialLink[] = [
 const DEFAULT_CONTACTS: ContactInfo = {
   email:    'hello@varvara.photo',
   phone:    '+7 999 000-00-00',
-  location: ['Нижний Новгород · съёмки по всей России'],
+  location: ['Нижний Новгород', 'съёмки по всей России'],
 }
 
 export const useSiteStore = defineStore('site', () => {
