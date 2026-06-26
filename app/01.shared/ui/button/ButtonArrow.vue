@@ -6,22 +6,7 @@
     :aria-label="ariaLabel"
     type="button"
   >
-    <svg
-      class="btn-arrow__icon"
-      width="8"
-      height="14"
-      viewBox="0 0 8 14"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M7 1L1 7L7 13"
-        stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-    </svg>
+    <Icon class="btn-arrow__icon" name="ph:caret-left-bold" aria-hidden="true" width="1.5em" height="1.5em" />
   </button>
 </template>
 
