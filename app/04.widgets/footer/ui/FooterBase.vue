@@ -70,6 +70,7 @@ const currentYear = new Date().getFullYear()
 .footer {
   background: var(--bg);
   color: var(--text);
+  border-top: 1px solid var(--line);
 
   &__inner {
     max-width: calc(var(--maxw) + var(--gutter) * 2);
