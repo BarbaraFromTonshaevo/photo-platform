@@ -2,7 +2,7 @@
   <footer class="footer" role="contentinfo">
     <div class="footer__inner">
       <div class="footer__top">
-        <p class="footer__tagline">Сохраним ваш<br>момент вместе</p>
+        <p class="footer__tagline">Сохраним ваш<br />момент вместе</p>
 
         <div class="footer__cols">
           <div class="footer__col">
@@ -44,14 +44,24 @@
               <a :href="`tel:${siteStore.contacts.phone.replace(/\D/g, '')}`" class="footer__link">
                 {{ siteStore.contacts.phone }}
               </a>
-              <span class="footer__location">{{ siteStore.contacts.location }}</span>
+              <div class="footer__locations">
+                <div
+                    v-for="(location, index) of siteStore.contacts.location"
+                    :key="index"
+                    class="footer__location"
+                >
+                    {{ location }}
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <div class="footer__bottom">
-        <span class="footer__copy">© {{ currentYear }} {{ t('logoName') }}. {{ t('allRights') }}</span>
+        <span class="footer__copy"
+          >© {{ currentYear }} {{ t('logoName') }}. {{ t('allRights') }}</span
+        >
         <span class="footer__quote">{{ t('footerQuote') }}</span>
       </div>
     </div>
@@ -77,6 +87,9 @@ const currentYear = new Date().getFullYear()
     margin-inline: auto;
     padding-inline: var(--gutter);
     padding-block: var(--space-9) var(--space-7);
+    @include tablet{
+        padding-block: var(--space-7) var(--space-5);
+    }
   }
 
   &__top {
@@ -85,6 +98,10 @@ const currentYear = new Date().getFullYear()
     align-items: flex-start;
     gap: var(--space-8);
     padding-bottom: var(--space-8);
+    @include tablet{
+        flex-direction: column;
+        gap: var(--space-6);
+    }
   }
 
   &__tagline {
@@ -102,6 +119,11 @@ const currentYear = new Date().getFullYear()
     display: flex;
     gap: var(--space-9);
     flex-shrink: 0;
+    @include tablet-s{
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: var(--space-7) var(--space-5);
+    }
   }
 
   &__col {
@@ -138,10 +160,30 @@ const currentYear = new Date().getFullYear()
     }
   }
 
+  &__locations{
+    display: flex;
+    gap: var(--space-1) var(--space-4);
+    @include desktop{
+        flex-wrap: wrap;
+        flex-direction: column;
+    }
+  }
+
   &__location {
+    display: flex;
+    gap: var(--space-4);
     font-family: var(--font-ui);
     font-size: var(--text-sm);
     color: var(--text-muted);
+    &:not(:last-child)::after{
+        content: '·';
+    }
+    @include desktop{
+        flex-wrap: wrap;
+        &::after{
+            display: none;
+        }
+    }
   }
 
   &__bottom {
@@ -150,12 +192,20 @@ const currentYear = new Date().getFullYear()
     align-items: center;
     padding-top: var(--space-5);
     border-top: 1px solid var(--line);
+    gap: var(--space-5);
+    @include mobile{
+        flex-direction: column;
+        gap: var(--space-2);
+    }
   }
 
   &__copy {
     font-family: var(--font-ui);
     font-size: var(--text-xs);
     color: var(--text-muted);
+    @include mobile{
+        text-align: center;
+    }
   }
 
   &__quote {
@@ -163,6 +213,10 @@ const currentYear = new Date().getFullYear()
     font-size: var(--text-sm);
     font-style: italic;
     color: var(--text-faint);
+    text-align: end;
+    @include mobile{
+        text-align: center;
+    }
   }
 }
 </style>
