@@ -1,20 +1,20 @@
 <template>
   <NuxtLink v-if="to" :to="to" :class="buttonClasses" v-bind="componentProps">
-    <span v-if="loading" class="ui-button__spinner" aria-hidden="true" />
+    <Icon v-if="loading" class="ui-button__spinner" name="ph:arrow-clockwise" aria-hidden="true" />
     <slot />
-    <span v-if="arrow" class="ui-button__arrow" aria-hidden="true" />
+    <Icon v-if="arrow" class="ui-button__arrow" name="ph:arrow-right" aria-hidden="true" />
   </NuxtLink>
 
   <a v-else-if="href" :href="href" :class="buttonClasses" v-bind="componentProps">
-    <span v-if="loading" class="ui-button__spinner" aria-hidden="true" />
+    <Icon v-if="loading" class="ui-button__spinner" name="ph:arrow-clockwise" aria-hidden="true" />
     <slot />
-    <span v-if="arrow" class="ui-button__arrow" aria-hidden="true" />
+    <Icon v-if="arrow" class="ui-button__arrow" name="ph:arrow-right" aria-hidden="true" />
   </a>
 
   <button v-else :type="type ?? 'button'" :class="buttonClasses" v-bind="componentProps">
-    <span v-if="loading" class="ui-button__spinner" aria-hidden="true" />
+    <Icon v-if="loading" class="ui-button__spinner" name="ph:arrow-clockwise" aria-hidden="true" />
     <slot />
-    <span v-if="arrow" class="ui-button__arrow" aria-hidden="true" />
+    <Icon v-if="arrow" class="ui-button__arrow" name="ph:arrow-right" aria-hidden="true" />
   </button>
 </template>
 
@@ -88,66 +88,33 @@ const buttonClasses = computed(() => [
 <style lang="scss" scoped>
 .ui-button {
   font-family: var(--font-ui);
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--space-3);
   width: fit-content;
   height: fit-content;
   cursor: pointer;
   border-radius: var(--radius-pill);
   transition: var(--dur-fast) var(--ease);
-
-  &__arrow {
-    display: flex;
-    width: fit-content;
-    padding: 12px;
-    aspect-ratio: 1;
-    border-radius: var(--radius-pill);
-    background-color: transparent;
-    transition: var(--dur-fast) var(--ease);
-    &::before {
-      content: '';
-      display: block;
-      width: 24px;
-      height: 24px;
-      @include mask('/icons/arrow-right.svg', var(--on-accent));
-      transition: var(--dur-fast) var(--ease);
-    }
-  }
+  padding: 0.95em 1.9em;
+  font-weight: 600;
+  line-height: 1;
 
   &__spinner {
-    flex-shrink: 0;
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    background-color: currentColor;
-    mask-size: contain;
-    mask-repeat: no-repeat;
-    mask-position: center;
-    mask-image: url('/icons/spinner.svg');
-    animation: spin 0.8s linear infinite;
+    animation: spin 1s linear infinite;
   }
 
   &--l {
-    font-weight: 600;
-    font-size: 20px;
-    line-height: 1;
-    padding: 20px 48px;
+    font-size: var(--text-md);
   }
 
   &--m {
-    font-weight: 600;
-    font-size: 18px;
-    line-height: 1;
-    padding: 18px 40px;
+    font-size: var(--text-base);
   }
 
   &--s {
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 1;
-    padding: 13px 28px;
+    font-size: var(--text-sm);
   }
 
   &--primary {
@@ -181,35 +148,6 @@ const buttonClasses = computed(() => [
       border-color: var(--accent);
     }
 
-    &.has-arrow {
-      .ui-button__arrow {
-        background-color: transparent;
-        &::before {
-          background-color: var(--text);
-        }
-      }
-      &.ui-button--l {
-        padding: 8px 8px 8px 20px;
-      }
-      &.ui-button--m {
-        padding: 6px 6px 6px 18px;
-      }
-      &.ui-button--s {
-        padding: 4px 4px 4px 13px;
-      }
-    }
-
-    &.has-arrow:hover {
-      background: transparent;
-      border-color: var(--line-strong);
-      .ui-button__arrow {
-        background-color: var(--accent);
-        &::before {
-          background-color: var(--on-accent);
-        }
-      }
-    }
-
     &:active {
       background: var(--accent-tint);
       color: color-mix(in srgb, var(--text) 60%, transparent);
@@ -234,11 +172,6 @@ const buttonClasses = computed(() => [
   &.is-loading {
     cursor: wait;
     pointer-events: none;
-  }
-
-  &.has-arrow {
-    justify-content: space-between;
-    gap: 10px;
   }
 }
 
