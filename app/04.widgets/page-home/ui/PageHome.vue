@@ -2,9 +2,9 @@
   <div class="page-home">
     <PageHomeHero />
     <PageHomeAbout />
-    <PageHomePortfolio />
-    <PageHomeHistory />
-    <PageHomeAlbum />
-    <PageHomeContacts />
+    <!-- <PageHomePortfolio /> -->
+    <!-- <PageHomeHistory /> -->
+    <!-- <PageHomeAlbum /> -->
+    <!-- <PageHomeContacts /> -->
   </div>
 </template>
