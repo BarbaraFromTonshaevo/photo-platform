@@ -5,22 +5,14 @@ export function useHeaderZoneObserver(
   onEnter: () => void,
   onLeave: () => void
 ) {
-  /* 
-    * TODO: создание observer обернуть в функцию  
-    * TODO: добавить слушатель событий для resize
-    * TODO: добавить debounce/throttle
-    * TODO: в unmounted добавить remove для resize
-    * TODO: сравнить entry.boundingClientRect
-  */
   let observer: IntersectionObserver | null = null
-  onMounted(() => {
+  let headerHeight = 0
+
+  function initObserver() {
     if (!targetRef.value) return
-    const headerHeight = parseInt(
-      getComputedStyle(document.documentElement).getPropertyValue('--header-h')
-    )
     const options = {
       root: null,
-      rootMargin: `0px 0px -${window.innerHeight - headerHeight}px 0px`,
+      rootMargin: `0px 0px -${window.innerHeight - (headerHeight ?? 0)}px 0px`,
       threshold: 0
     }
     const callback = (entries: IntersectionObserverEntry[]) => {
@@ -34,8 +26,29 @@ export function useHeaderZoneObserver(
     }
     observer = new IntersectionObserver(callback, options)
     observer.observe(targetRef.value)
+  }
+
+  let debounce: null | number = null
+
+  function changeObserver() {
+    if (debounce) clearTimeout(debounce)
+
+    debounce = setTimeout(() => {
+      observer?.disconnect()
+      initObserver()
+    }, 1000)
+  }
+
+  onMounted(() => {
+    headerHeight = parseInt(
+      getComputedStyle(document.documentElement).getPropertyValue('--header-h')
+    )
+    initObserver()
+    window.addEventListener('resize', changeObserver)
   })
+
   onUnmounted(() => {
     observer?.disconnect()
+    window.removeEventListener('resize', changeObserver)
   })
 }
