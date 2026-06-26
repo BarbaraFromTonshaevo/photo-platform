@@ -1,16 +1,11 @@
 <template>
   <section id="contacts" class="contacts">
     <div class="contacts__inner">
-
-      <div class="contacts__meta">
-        <span class="contacts__meta-label">Контакты</span>
-        <span class="contacts__meta-index">05</span>
-      </div>
+      <div class="contacts__label">Контакты</div>
 
       <h2 class="contacts__heading">Стоимость и&nbsp;запись</h2>
 
       <div class="contacts__body">
-
         <!-- Левая колонка: прайс + контакты -->
         <div ref="leftColRef" class="contacts__left">
           <div class="contacts__price">
@@ -20,11 +15,7 @@
             </div>
 
             <ul class="contacts__price-list">
-              <li
-                v-for="item in PRICES"
-                :key="item.title"
-                class="contacts__price-item"
-              >
+              <li v-for="item in PRICES" :key="item.title" class="contacts__price-item">
                 <div class="contacts__price-info">
                   <span class="contacts__price-name">{{ item.title }}</span>
                   <span class="contacts__price-desc">{{ item.description }}</span>
@@ -65,7 +56,6 @@
         <div ref="formColRef" class="contacts__right">
           <RequestForm />
         </div>
-
       </div>
     </div>
   </section>
@@ -86,18 +76,18 @@ interface PriceItem {
 }
 
 const PRICES: PriceItem[] = [
-  { title: 'Репортажная съёмка',  description: '1 час, ~50 обработанных кадров',   price: '8 000 ₽' },
-  { title: 'Студийный портрет',   description: 'студия + 1 час, 15 кадров',         price: '10 000 ₽' },
-  { title: 'Творческая съёмка',   description: 'идея, локация, образ',              price: 'от 12 000 ₽' },
-  { title: 'Свадебный день',      description: 'до 10 часов, 2-й фотограф',         price: 'от 45 000 ₽' },
-  { title: 'Детская / семейная',  description: '1 час, дома или на улице',           price: '9 000 ₽' },
+  { title: 'Репортажная съёмка', description: '1 час, ~50 обработанных кадров', price: '8 000 ₽' },
+  { title: 'Студийный портрет', description: 'студия + 1 час, 15 кадров', price: '10 000 ₽' },
+  { title: 'Творческая съёмка', description: 'идея, локация, образ', price: 'от 12 000 ₽' },
+  { title: 'Свадебный день', description: 'до 10 часов, 2-й фотограф', price: 'от 45 000 ₽' },
+  { title: 'Детская / семейная', description: '1 час, дома или на улице', price: '9 000 ₽' }
 ]
 
 const siteStore = useSiteStore()
 const { contacts } = storeToRefs(siteStore)
 
 const telegramHref = computed(() => {
-  return siteStore.socials.find(s => s.network === 'telegram')?.href ?? '#'
+  return siteStore.socials.find((s) => s.network === 'telegram')?.href ?? '#'
 })
 
 const telegramHandle = computed(() => {
@@ -120,8 +110,8 @@ onMounted(() => {
       stagger: 0.09,
       scrollTrigger: {
         trigger: leftColRef.value,
-        start: 'top 80%',
-      },
+        start: 'top 80%'
+      }
     })
   }
 
@@ -135,8 +125,8 @@ onMounted(() => {
       stagger: 0.1,
       scrollTrigger: {
         trigger: leftColRef.value,
-        start: 'top 75%',
-      },
+        start: 'top 75%'
+      }
     })
   }
 
@@ -147,8 +137,8 @@ onMounted(() => {
     ease: 'power3.out',
     scrollTrigger: {
       trigger: formColRef.value,
-      start: 'top 80%',
-    },
+      start: 'top 80%'
+    }
   })
 })
 </script>
@@ -167,25 +157,13 @@ onMounted(() => {
     gap: var(--space-7);
   }
 
-  &__meta {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-  }
-
-  &__meta-label {
+  &__label {
     font-family: var(--font-ui);
     font-size: var(--text-xs);
+    font-weight: 600;
     letter-spacing: var(--tracking-label);
     text-transform: uppercase;
-    color: var(--text-muted);
-  }
-
-  &__meta-index {
-    font-family: var(--font-ui);
-    font-size: var(--text-sm);
-    color: var(--text-faint);
-    font-style: italic;
+    color: var(--accent-contrast);
   }
 
   &__heading {
@@ -238,6 +216,7 @@ onMounted(() => {
   &__price-header-label {
     font-family: var(--font-ui);
     font-size: var(--text-xs);
+    font-weight: 600;
     letter-spacing: var(--tracking-label);
     text-transform: uppercase;
     color: var(--text-muted);

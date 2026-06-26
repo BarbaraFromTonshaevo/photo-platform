@@ -9,10 +9,7 @@
       </div>
 
       <div ref="contentColRef" class="about__content-col">
-        <div class="about__meta">
-          <span class="about__label">О себе</span>
-          <span class="about__index">01</span>
-        </div>
+        <div class="about__label">О себе</div>
 
         <h2 class="about__heading">
           Хобби, которое <em>переросло</em> в&nbsp;профессию
@@ -86,8 +83,8 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .about {
-  background: #f2ede4;
-  color: #1c1810;
+  background: var(--bg);
+  color: var(--text);
   padding: var(--space-10) var(--gutter);
 
   &__inner {
@@ -108,7 +105,6 @@ onMounted(() => {
     aspect-ratio: 4 / 5;
     height: calc(100vh - var(--header-h) - var(--gutter) * 2 );
     overflow: hidden;
-    background: #d9d0c4;
 
     img {
       width: 100%;
@@ -133,31 +129,18 @@ onMounted(() => {
   }
 
   &__content-col {
-    padding-top: var(--space-6);
     display: flex;
     flex-direction: column;
     gap: var(--space-6);
   }
 
-  &__meta {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-  }
-
   &__label {
     font-family: var(--font-ui);
     font-size: var(--text-xs);
+    font-weight: 600;
     letter-spacing: var(--tracking-label);
     text-transform: uppercase;
-    color: #7a7268;
-  }
-
-  &__index {
-    font-family: var(--font-ui);
-    font-size: var(--text-sm);
-    color: #b0a898;
-    font-style: italic;
+    color: var(--accent-contrast);
   }
 
   &__heading {
@@ -170,7 +153,7 @@ onMounted(() => {
 
     em {
       font-style: italic;
-      color: #7a7268;
+      color: var(--accent);
     }
   }
 
@@ -183,7 +166,7 @@ onMounted(() => {
       font-family: var(--font-ui);
       font-size: var(--text-base);
       line-height: var(--leading-relaxed);
-      color: #3d3830;
+      color: var(--text-soft);
       margin: 0;
     }
   }
@@ -193,13 +176,13 @@ onMounted(() => {
     font-style: italic;
     font-size: var(--text-xl);
     font-weight: 400;
-    color: #1c1810;
+    color: inherit;
     margin: 0;
   }
 
   &__traits {
     display: flex;
-    gap: var(--space-5);
+    gap: var(--space-3) var(--space-5);
     list-style: none;
     padding: 0;
     margin: 0;
@@ -208,7 +191,7 @@ onMounted(() => {
     li {
       font-family: var(--font-ui);
       font-size: var(--text-sm);
-      color: #7a7268;
+      color: var(--text-muted);
       display: flex;
       gap: var(--space-2);
       align-items: center;

@@ -134,7 +134,7 @@ onUnmounted(() => {
   width: 100%;
   height: 100dvh;
   overflow: hidden;
-  background: #0e0d0c;
+  background: oklch(0.185 0.008 72);
   color: #fff;
   padding-top: var(--header-h);
 

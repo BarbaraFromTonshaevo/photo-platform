@@ -9,7 +9,7 @@
               <h2 class="history__title">Как я пришла в фотографию</h2>
             </div>
             <span class="history__counter">
-              {{ pad(activeIndex + 1) }}&nbsp;/&nbsp;{{ pad(slides.length) }}
+              <span class="history__counter--accent">{{ pad(activeIndex + 1) }}</span>&nbsp;/&nbsp;{{ pad(slides.length) }}
             </span>
           </div>
 
@@ -57,12 +57,12 @@
               @click="goToSlide(activeIndex - 1)"
             />
             <div class="history__timeline">
-              <div class="history__tl-track" />
+              <div class="history__tl-track" :style="'--percent: ' + activeIndex / (slides.length - 1) * 100 + '%'" />
               <button
                 v-for="(slide, i) in slides"
                 :key="slide.year"
                 class="history__tl-item"
-                :class="{ 'is-active': i === activeIndex }"
+                :class="[{ 'is-active': i === activeIndex }, { 'is-previous': i <= activeIndex }]"
                 @click="goToSlide(i)"
               >
                 <span class="history__tl-dot" />
@@ -89,7 +89,6 @@ import type { Swiper as SwiperType } from 'swiper'
 import { Keyboard } from 'swiper/modules'
 import 'swiper/css'
 import gsap from 'gsap'
-import { deprecations } from 'sass'
 
 const swiperModules = [Keyboard]
 
@@ -149,7 +148,7 @@ function revealSlideContent(slideEl: Element | undefined) {
   const targets = getSlideTargets(slideEl)
   if (!targets) return
   const { big, side, year, subtitle, desc } = targets
-
+  if(!(side[0] && side[1])) return
   gsap
     .timeline({ delay: 0.08 })
     .to(year, { opacity: 1, y: 0, duration: 0.72, ease: 'power3.out' })
@@ -250,8 +249,8 @@ function onSlideChangeTransitionEnd(swiper: SwiperType) {
 
 <style lang="scss" scoped>
 .history {
-  background: #f2ede4;
-  color: #1c1810;
+  background: var(--bg-tint);
+  color: var(--text);
 
   &__spacer {
     position: relative;
@@ -294,7 +293,8 @@ function onSlideChangeTransitionEnd(swiper: SwiperType) {
     font-size: var(--text-xs);
     letter-spacing: var(--tracking-label);
     text-transform: uppercase;
-    color: #7a7268;
+    font-weight: 600;
+    color: var(--accent-contrast);
   }
 
   &__title {
@@ -307,12 +307,17 @@ function onSlideChangeTransitionEnd(swiper: SwiperType) {
   }
 
   &__counter {
-    font-family: var(--font-ui);
-    font-size: var(--text-sm);
-    color: #b0a898;
+    justify-self: end;
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    color: var(--text-faint);
+    font-variant-numeric: tabular-nums;
     font-style: italic;
     white-space: nowrap;
     padding-bottom: 6px;
+    &--accent{
+        color: var(--accent-contrast);
+    }
   }
 
   // ── Swiper ──────────────────────────────────────────────────────────
@@ -340,27 +345,26 @@ function onSlideChangeTransitionEnd(swiper: SwiperType) {
     font-family: var(--font-display);
     font-style: italic;
     font-size: var(--text-3xl);
-    font-weight: 400;
     line-height: 1;
     letter-spacing: var(--tracking-tight);
-    color: #3d4a35;
+    color: var(--accent-contrast);
+    opacity: 0.9;
     margin: 0;
   }
 
   &__subtitle {
     font-family: var(--font-display);
-    font-size: var(--text-xl);
-    font-weight: 400;
+    font-size: var(--text-2xl);
+    font-weight: 500;
     line-height: var(--leading-snug);
     letter-spacing: var(--tracking-tight);
-    margin: 0;
   }
 
   &__desc {
     font-family: var(--font-ui);
     font-size: var(--text-base);
     line-height: var(--leading-relaxed);
-    color: #3d3830;
+    color: var(--text-soft);
     margin: 0;
   }
 
@@ -382,7 +386,7 @@ function onSlideChangeTransitionEnd(swiper: SwiperType) {
   &__photo {
     position: relative;
     overflow: hidden;
-    background-color: #e4ddd1;
+    background-color: var(--surface-2);
     background-image: repeating-linear-gradient(
       -45deg,
       transparent,
@@ -405,15 +409,15 @@ function onSlideChangeTransitionEnd(swiper: SwiperType) {
 
   &__tag {
     padding: var(--space-2) var(--space-4);
-    background: rgba(242, 237, 228, 0.72);
+    background: var(--surface);
     backdrop-filter: blur(6px);
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--line);
     border-radius: var(--radius-pill);
     font-family: var(--font-ui);
     font-size: var(--text-xs);
     letter-spacing: var(--tracking-label);
     text-transform: uppercase;
-    color: #3d3830;
+    color: var(--text-soft);
     white-space: nowrap;
     pointer-events: none;
     user-select: none;
@@ -441,7 +445,18 @@ function onSlideChangeTransitionEnd(swiper: SwiperType) {
     left: 5px;
     right: 5px;
     height: 1px;
-    background: #c8bfb4;
+    background: var(--line-strong);
+        &::after{
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: var(--percent);
+        background-color: var(--accent);
+        transition: width 0.2s;
+    }
   }
 
   &__tl-item {
@@ -464,7 +479,7 @@ function onSlideChangeTransitionEnd(swiper: SwiperType) {
     }
 
     &:focus-visible {
-      outline: 2px solid #4a5e39;
+      outline: 2px solid var(--accent);
       outline-offset: 4px;
       border-radius: 2px;
     }
@@ -475,26 +490,32 @@ function onSlideChangeTransitionEnd(swiper: SwiperType) {
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    border: 1.5px solid #7a7268;
-    background: transparent;
+    border: 1.5px solid var(--line-strong);
+    background-color: var(--bg-tint);
     transition:
       background var(--dur-fast) var(--ease),
+      transform var(--dur-fast) var(--ease),
       border-color var(--dur-fast) var(--ease);
 
+    .is-previous & {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
     .is-active & {
-      background: #4a5e39;
-      border-color: #4a5e39;
+      transform: scale(1.5);
     }
   }
 
   &__tl-year {
     font-family: var(--font-ui);
     font-size: var(--text-xs);
-    color: #7a7268;
+    font-weight: 600;
+    color: var(--text-faint);
     transition: color var(--dur-fast) var(--ease);
 
     .is-active & {
-      color: #1c1810;
+      color: var(--text);
       font-weight: 500;
     }
   }

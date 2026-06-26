@@ -10,10 +10,7 @@
       </div>
 
       <div ref="contentColRef" class="album__content-col">
-        <div class="album__meta">
-          <span class="album__label">Спецпредложение</span>
-          <span class="album__index">04</span>
-        </div>
+        <div class="album__label">Спецпредложение</div>
 
         <h2 class="album__heading">
           Печатный фотоальбом<br />
@@ -21,26 +18,40 @@
         </h2>
 
         <p class="album__desc">
-          Ваша съёмка живёт не только в телефоне. Я собираю
-          плотный альбом на дизайнерской бумаге с разворотами на
-          всю ширину&nbsp;&mdash; вещь, которую хочется держать в руках и
-          передавать дальше.
+          Ваша съёмка живёт не только в телефоне. Я собираю плотный альбом на дизайнерской бумаге с
+          разворотами на всю ширину&nbsp;&mdash; вещь, которую хочется держать в руках и передавать
+          дальше.
         </p>
 
         <ul class="album__features">
-          <li>Дизайнерская бумага, печать музейного качества</li>
-          <li>Развороты без разрыва, тиснение имени на обложке</li>
-          <li>Индивидуальная вёрстка под вашу историю</li>
+          <li>
+            <Icon
+              class="album__icon"
+              name="ph:check"
+              aria-hidden="true"
+              width="1.3em"
+            />Дизайнерская бумага, печать музейного качества
+          </li>
+          <li>
+            <Icon class="album__icon" name="ph:check" aria-hidden="true" width="1.3em" />Развороты
+            без разрыва, тиснение имени на обложке
+          </li>
+          <li>
+            <Icon
+              class="album__icon"
+              name="ph:check"
+              aria-hidden="true"
+              width="1.3em"
+            />Индивидуальная вёрстка под вашу историю
+          </li>
         </ul>
-
-        <hr class="album__divider" />
 
         <div class="album__price-block">
           <div class="album__price-col">
             <span class="album__price-label">Цена от</span>
             <div class="album__price-row">
               <span class="album__price-current">6&nbsp;900&nbsp;₽</span>
-              <span class="album__price-old">9&nbsp;500&nbsp;₽</span>
+              <del class="album__price-old">9&nbsp;500&nbsp;₽</del>
             </div>
           </div>
           <ButtonBase variant="primary" size="m" to="#">Заказать альбом</ButtonBase>
@@ -68,8 +79,8 @@ onMounted(() => {
     ease: 'power3.out',
     scrollTrigger: {
       trigger: imageColRef.value,
-      start: 'top 80%',
-    },
+      start: 'top 80%'
+    }
   })
 
   const contentEls = contentColRef.value?.children
@@ -82,8 +93,8 @@ onMounted(() => {
       stagger: 0.12,
       scrollTrigger: {
         trigger: contentColRef.value,
-        start: 'top 80%',
-      },
+        start: 'top 80%'
+      }
     })
   }
 })
@@ -91,8 +102,8 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .album {
-  background: #f2ede4;
-  color: #1c1810;
+  background: var(--bg);
+  color: var(--text);
   padding: var(--space-10) var(--gutter);
 
   &__inner {
@@ -112,13 +123,11 @@ onMounted(() => {
     position: relative;
     aspect-ratio: 1 / 1;
     overflow: hidden;
-    background-color: #e4ddd1;
+    background-color: var(--bg-tint);
     background-image: repeating-linear-gradient(
-      -45deg,
-      transparent,
-      transparent 10px,
-      rgba(0, 0, 0, 0.045) 10px,
-      rgba(0, 0, 0, 0.045) 11px
+      135deg,
+      transparent 0 13px,
+      color-mix(in oklch, var(--text) 5%, transparent) 13px 14px
     );
     display: flex;
     align-items: center;
@@ -133,27 +142,29 @@ onMounted(() => {
   &__stamp {
     position: relative;
     z-index: 1;
-    padding: var(--space-2) var(--space-5);
-    background: rgba(242, 237, 228, 0.72);
+    padding: var(--space-2) var(--space-4);
+    background: var(--surface);
     backdrop-filter: blur(6px);
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--line);
     border-radius: var(--radius-pill);
     font-family: var(--font-ui);
     font-size: var(--text-xs);
     letter-spacing: var(--tracking-label);
     text-transform: uppercase;
-    color: #3d3830;
+    color: var(--text-soft);
     white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
   }
 
   &__badge {
     position: absolute;
     top: -32px;
     right: -20px;
-    width: 130px;
-    height: 130px;
+    width: clamp(86px, 11vw, 118px);
+    height: clamp(86px, 11vw, 118px);
     border-radius: 50%;
-    background: #4a5e39;
+    background: var(--accent);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -161,39 +172,28 @@ onMounted(() => {
     padding: var(--space-4);
     font-family: var(--font-display);
     font-style: italic;
-    font-size: 1.125rem;
+    font-size: var(--text-md);
     font-weight: 400;
     line-height: var(--leading-snug);
-    color: #f2ede4;
+    color: var(--on-accent);
+    transform-origin: center center;
+    transform: rotate(-5deg);
     z-index: 2;
   }
 
   &__content-col {
-    padding-top: var(--space-6);
     display: flex;
     flex-direction: column;
     gap: var(--space-6);
   }
 
-  &__meta {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-  }
-
   &__label {
     font-family: var(--font-ui);
+    font-weight: 600;
     font-size: var(--text-xs);
     letter-spacing: var(--tracking-label);
     text-transform: uppercase;
-    color: #7a7268;
-  }
-
-  &__index {
-    font-family: var(--font-ui);
-    font-size: var(--text-sm);
-    color: #b0a898;
-    font-style: italic;
+    color: var(--accent-contrast);
   }
 
   &__heading {
@@ -206,7 +206,7 @@ onMounted(() => {
 
     em {
       font-style: italic;
-      color: #4a5e39;
+      color: var(--accent-contrast);
     }
   }
 
@@ -214,7 +214,7 @@ onMounted(() => {
     font-family: var(--font-ui);
     font-size: var(--text-base);
     line-height: var(--leading-relaxed);
-    color: #3d3830;
+    color: var(--text-soft);
     margin: 0;
   }
 
@@ -228,29 +228,21 @@ onMounted(() => {
 
     li {
       font-family: var(--font-ui);
-      font-size: var(--text-base);
-      color: #3d3830;
+      font-size: var(--text-sm);
+      color: var(--text-soft);
       display: flex;
       align-items: flex-start;
       gap: var(--space-3);
-
-      &::before {
-        content: '✓';
-        flex-shrink: 0;
-        color: #4a5e39;
-        font-size: var(--text-sm);
-        margin-top: 2px;
-      }
     }
   }
 
-  &__divider {
-    border: none;
-    border-top: 1px solid #d9d0c4;
-    margin: 0;
+  &__icon{
+    color: var(--accent);
   }
 
   &__price-block {
+    border-top: 1px solid var(--line);
+    padding-top: var(--space-5);
     display: flex;
     align-items: center;
     gap: var(--space-6);
@@ -267,28 +259,28 @@ onMounted(() => {
     font-size: var(--text-xs);
     letter-spacing: var(--tracking-label);
     text-transform: uppercase;
-    color: #7a7268;
+    color: var(--text-muted);
   }
 
   &__price-row {
     display: flex;
     align-items: baseline;
     gap: var(--space-4);
+
   }
 
   &__price-current {
     font-family: var(--font-display);
     font-size: var(--text-2xl);
     font-weight: 400;
-    color: #1c1810;
     letter-spacing: var(--tracking-tight);
   }
 
   &__price-old {
     font-family: var(--font-ui);
     font-size: var(--text-base);
-    color: #b0a898;
     text-decoration: line-through;
+    color: var(--text-faint);
   }
 }
 </style>

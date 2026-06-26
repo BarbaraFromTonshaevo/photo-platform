@@ -122,7 +122,7 @@ onMounted(() => {
     position: relative;
     z-index: 1;
     height: 100%;
-    padding: calc(var(--header-h) + var(--space-5)) var(--gutter) var(--space-8);
+    padding: calc(var(--header-h) + var(--space-8)) var(--gutter) var(--space-8);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
