@@ -64,10 +64,17 @@ export default defineNuxtConfig({
   postcss: {
     plugins: {
       autoprefixer: {},
+      // Merges duplicate @media blocks produced by nesting breakpoint
+      // mixins inside selectors instead of grouping by breakpoint —
+      // lightningcss/cssnano only merge *adjacent* identical @media rules
+      'postcss-combine-media-query': {},
     },
   },
 
   vite: {
+    build: {
+      cssMinify: 'lightningcss',
+    },
     optimizeDeps: {
       include: [
         '@vue/devtools-core',
