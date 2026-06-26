@@ -44,59 +44,25 @@
             :aria-label="social.label"
           />
         </div>
-
         <span class="header__sep" aria-hidden="true" />
-
-        <div class="header__lang" role="group" :aria-label="t('langLabel')">
-          <button
-            :class="['header__lang-btn', { 'is-active': locale === 'ru' }]"
-            @click="switchLocale('ru')"
-          >
-            RU
-          </button>
-          <span class="header__lang-div" aria-hidden="true">/</span>
-          <button
-            :class="['header__lang-btn', { 'is-active': locale === 'en' }]"
-            @click="switchLocale('en')"
-          >
-            EN
-          </button>
-        </div>
-
+        <LocaleToggle />
         <span class="header__sep" aria-hidden="true" />
-
-        <button
-          class="header__theme"
-          :aria-label="isDark ? t('themeToLight') : t('themeToDark')"
-          @click="toggleTheme"
-        >
-          <Icon :name="isDark ? 'ph:moon-stars' : 'ph:sun'" aria-hidden="true" />
-        </button>
+        <ThemeToggle />
+        <ButtonBurger class="header__burger" />
       </div>
     </div>
+    <!-- <HeaderMenu /> -->
   </header>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
 import { useViewerStore } from '@entities/viewer'
 import { useSiteStore } from '@entities/site'
 
-const { t, setLocale: i18nSetLocale } = useI18n()
+const { t } = useI18n()
 const viewerStore = useViewerStore()
 const siteStore = useSiteStore()
-const { isDark, locale, forcedHeaderTheme } = storeToRefs(viewerStore)
-const { toggleTheme } = viewerStore
-
-onMounted(() => {
-  i18nSetLocale(viewerStore.locale)
-})
-
-// ── Language ──────────────────────────────────────────────────
-function switchLocale(code: 'ru' | 'en') {
-  viewerStore.setLocale(code)
-  i18nSetLocale(code)
-}
+const { forcedHeaderTheme } = storeToRefs(viewerStore)
 </script>
 
 <style lang="scss" scoped>
@@ -268,67 +234,8 @@ function switchLocale(code: 'ru' | 'en') {
     opacity: 0.2;
   }
 
-  // ── Language switcher ────────────────────────────────────────
-  &__lang {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-family: var(--font-ui);
-    font-size: var(--text-xs);
-    letter-spacing: var(--tracking-label);
-  }
-
-  &__lang-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    font: inherit;
-    letter-spacing: inherit;
-    color: inherit;
-    opacity: 0.45;
-    transition: opacity var(--dur-fast) var(--ease);
-
-    &.is-active {
-      opacity: 1;
-      font-weight: 600;
-    }
-
-    &:hover:not(.is-active) {
-      opacity: 0.75;
-    }
-  }
-
-  &__lang-div {
-    opacity: 0.3;
-    user-select: none;
-  }
-
-  // ── Theme toggle ─────────────────────────────────────────────
-  &__theme {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    background: none;
-    border-radius: var(--radius-pill);
-    border: 1px solid color-mix(in oklch, currentColor 25%, transparent);
-    cursor: pointer;
-    color: inherit;
-    transition: background-color var(--dur-fast) var(--ease);
-    font-size: 16px;
-
-    &:hover {
-      background: color-mix(in oklch, currentColor 10%, transparent);
-    }
-
-    &:focus-visible {
-      outline: 2px solid currentColor;
-      outline-offset: 3px;
-      border-radius: var(--radius-sm);
-    }
+  &__burger{
+    z-index: 5;
   }
 }
 </style>
