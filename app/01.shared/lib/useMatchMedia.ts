@@ -1,0 +1,22 @@
+import { onMounted, onUnmounted, ref } from 'vue'
+
+export function useMatchMedia(query: string) {
+  const matches = ref(false)
+  let media: MediaQueryList | null = null
+
+  function update() {
+    matches.value = media?.matches ?? false
+  }
+
+  onMounted(() => {
+    media = window.matchMedia(query)
+    update()
+    media.addEventListener('change', update)
+  })
+
+  onUnmounted(() => {
+    media?.removeEventListener('change', update)
+  })
+
+  return matches
+}

@@ -5,7 +5,6 @@
     :class="{ 'is-open': isOpen }"
     :aria-expanded="isOpen"
     :aria-label="isOpen ? t('menuClose') : t('menuOpen')"
-    @click="isOpen = !isOpen"
   >
     <span class="btn-burger__icon">
       <span class="btn-burger__line" />
@@ -17,7 +16,9 @@
 <script setup lang="ts">
 const { t } = useI18n()
 
-const isOpen = defineModel<boolean>({ default: false })
+defineProps<{
+    isOpen: boolean
+}>()
 </script>
 
 <style lang="scss" scoped>
