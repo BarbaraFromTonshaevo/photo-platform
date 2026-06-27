@@ -21,7 +21,7 @@
       </NuxtLink>
 
       <!-- Navigation -->
-      <nav class="header__nav" :aria-label="t('navAriaLabel')">
+      <nav v-if="!isLaptop" class="header__nav" :aria-label="t('navAriaLabel')">
         <NuxtLink
           v-for="link in siteStore.navLinks"
           :key="link.to"
@@ -45,24 +45,32 @@
           />
         </div>
         <span class="header__sep" aria-hidden="true" />
-        <LocaleToggle />
+        <LocaleToggle class="header__locale" />
         <span class="header__sep" aria-hidden="true" />
-        <ThemeToggle />
-        <ButtonBurger class="header__burger" />
+        <ThemeToggle class="header__theme" />
+        <ButtonBurger class="header__burger" :is-open="isMenuActive" @click="toggleMenu" />
       </div>
     </div>
-    <!-- <HeaderMenu /> -->
+    <HeaderMenu v-if="isLaptop" :is-active="isMenuActive" />
   </header>
 </template>
 
 <script setup lang="ts">
 import { useViewerStore } from '@entities/viewer'
 import { useSiteStore } from '@entities/site'
+import { useMatchMedia } from '@shared/lib/useMatchMedia'
 
 const { t } = useI18n()
 const viewerStore = useViewerStore()
 const siteStore = useSiteStore()
 const { forcedHeaderTheme } = storeToRefs(viewerStore)
+
+const isLaptop = useMatchMedia('(max-width: 1365px)')
+
+const isMenuActive = ref(false)
+function toggleMenu(){
+    isMenuActive.value = !isMenuActive.value
+}
 </script>
 
 <style lang="scss" scoped>
@@ -107,6 +115,7 @@ const { forcedHeaderTheme } = storeToRefs(viewerStore)
   &__inner {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     height: 100%;
     padding-inline: var(--gutter);
     max-width: calc(var(--maxw) + var(--gutter) * 2);
@@ -210,6 +219,9 @@ const { forcedHeaderTheme } = storeToRefs(viewerStore)
     display: flex;
     align-items: center;
     gap: var(--space-3);
+    @include tablet-s{
+        display: none;
+    }
   }
 
   &__social-link {
@@ -232,6 +244,20 @@ const { forcedHeaderTheme } = storeToRefs(viewerStore)
     height: 18px;
     background: currentColor;
     opacity: 0.2;
+    @include tablet-s{
+        display: none;
+    }
+  }
+
+  &__locale{
+    @include tablet-s{
+        display: none;
+    }
+  }
+  &__theme{
+    @include tablet-s{
+        display: none;
+    }
   }
 
   &__burger{
