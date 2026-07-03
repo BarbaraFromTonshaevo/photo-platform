@@ -135,6 +135,9 @@ onMounted(() => {
       justify-content: initial;
       gap: 30px;
     }
+    @include mobile{
+      padding-bottom: var(--space-5);
+    }
   }
 
   &__genres {
