@@ -216,6 +216,10 @@ onUnmounted(() => {
     transform-origin: center center;
     transform: rotate(-5deg);
     z-index: 2;
+    @include mobile{
+        right: -10px;
+        top: -15px;
+    }
   }
 
   &__content-head {
@@ -227,6 +231,7 @@ onUnmounted(() => {
     }
     @include mobile {
       order: -1;
+      gap: var(--space-5);
     }
   }
 
