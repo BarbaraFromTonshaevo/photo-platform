@@ -68,6 +68,7 @@ export default defineNuxtConfig({
       // mixins inside selectors instead of grouping by breakpoint —
       // lightningcss/cssnano only merge *adjacent* identical @media rules
       'postcss-combine-media-query': {},
+      'postcss-sort-media-queries': { sort: 'desktop-first' },
     },
   },
 
