@@ -1,7 +1,7 @@
 <template>
   <div class="page-home">
     <PageHomeHero />
-    <PageHomeAbout />
+    <!-- <PageHomeAbout /> -->
     <!-- <PageHomePortfolio /> -->
     <!-- <PageHomeHistory /> -->
     <!-- <PageHomeAlbum /> -->

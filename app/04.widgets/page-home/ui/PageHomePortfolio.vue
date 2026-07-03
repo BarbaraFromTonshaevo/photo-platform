@@ -58,6 +58,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { portfolioGenres as genres } from '../config/portfolioGenres'
 import { useViewerStore } from '@entities/viewer'
 import { useHeaderZoneObserver } from '~/01.shared/lib/useHeaderZoneObserver'
+import { useLenis } from '@shared/lib/useLenis'
 
 const viewerStore = useViewerStore()
 const { setForcedHeaderTheme } = viewerStore
@@ -78,13 +79,13 @@ useHeaderZoneObserver(
     }
 )
 
+const lenis = useLenis()
 let tween: gsap.core.Tween | null = null
 
-// NOTE: если в проекте добавится Lenis, заменить на lenis.scrollTo(top)
 function goTo(index: number) {
   if (!portfolioRef.value) return
   const top = portfolioRef.value.offsetTop + index * window.innerHeight
-  window.scrollTo({ top, behavior: 'smooth' })
+  lenis.scrollTo(top)
 }
 
 onMounted(() => {

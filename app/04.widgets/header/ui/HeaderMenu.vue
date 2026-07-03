@@ -59,9 +59,9 @@
 <script setup lang="ts">
 import { useSiteStore } from '@entities/site'
 import { gsap } from 'gsap'
-// import { useLenis } from '@shared/lib/useLenis'
+import { useLenis } from '@shared/lib/useLenis'
 
-// const lenis = useLenis()
+const lenis = useLenis()
 const props = defineProps<{
   isActive: boolean
 }>()
@@ -78,7 +78,7 @@ function openMenu() {
   if (isAnimating) return
   isAnimating = true
   menuRef.value?.showModal()
-//   lenis.stop()
+  lenis.stop()
 
   const img = rightRef.value?.querySelector('.header-menu__image')
   const navLinks = leftRef.value?.querySelectorAll('.header-menu__nav-link')
@@ -161,7 +161,7 @@ function closeMenu() {
       menuRef.value?.close()
       emit('closeMenu')
       isAnimating = false
-    //   lenis.start()
+      lenis.start()
     }
   })
   tl.to(

@@ -89,6 +89,7 @@ import type { Swiper as SwiperType } from 'swiper'
 import { Keyboard } from 'swiper/modules'
 import 'swiper/css'
 import gsap from 'gsap'
+import { useLenis } from '@shared/lib/useLenis'
 
 const swiperModules = [Keyboard]
 
@@ -119,6 +120,8 @@ const slides = [
     desc: 'Открываю собственное пространство для съёмок и печати. Запускаю авторские фотоальбомы ручной сборки.'
   }
 ]
+
+const lenis = useLenis()
 
 const spacerRef = ref<HTMLElement | null>(null)
 const swiperRef = ref<SwiperType | null>(null)
@@ -174,7 +177,7 @@ function scrollToIndex(idx: number) {
   if (total <= 0) return
   const wrapperTop = spacer.getBoundingClientRect().top + window.scrollY
   const targetY = wrapperTop + (idx / (slides.length - 1)) * total
-  window.scrollTo({ top: targetY, behavior: 'smooth' })
+  lenis.scrollTo(targetY)
 }
 
 function goToSlide(idx: number) {
@@ -222,12 +225,12 @@ function onResize() {
 
 onMounted(() => {
   updateSpacerHeight()
-  window.addEventListener('scroll', onScroll, { passive: true })
+  lenis.on('scroll', onScroll)
   window.addEventListener('resize', onResize)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', onScroll)
+  lenis.off('scroll', onScroll)
   window.removeEventListener('resize', onResize)
 })
 
