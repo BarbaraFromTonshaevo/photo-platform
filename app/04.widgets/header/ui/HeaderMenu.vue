@@ -79,6 +79,7 @@ function openMenu() {
   isAnimating = true
   menuRef.value?.showModal()
   lenis.stop()
+  document.documentElement.style.overflow = 'hidden'
 
   const img = rightRef.value?.querySelector('.header-menu__image')
   const navLinks = leftRef.value?.querySelectorAll('.header-menu__nav-link')
@@ -158,6 +159,7 @@ function closeMenu() {
   const tl = gsap.timeline({
     onComplete: () => {
       // Закрываем dialog только после завершения анимации
+      document.documentElement.style.overflow = ''
       menuRef.value?.close()
       emit('closeMenu')
       isAnimating = false
