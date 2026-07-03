@@ -18,16 +18,14 @@
         </h1>
       </div>
 
-      <div ref="contentRef" class="hero__content">
-        <p class="hero__desc">
-          Живые эмоции,<br />
-          естественный свет и<br />
-          внимание к деталям.
-        </p>
-        <div class="hero__actions">
-          <ButtonBase variant="primary" size="m" to="#"> Записаться на съёмку </ButtonBase>
-          <ButtonBase variant="secondary" size="m" to="#"> Смотреть портфолио </ButtonBase>
-        </div>
+      <p ref="contentRef" class="hero__desc">
+        Живые эмоции,<br />
+        естественный свет и<br />
+        внимание к деталям.
+      </p>
+      <div ref="actionsRef" class="hero__actions">
+        <ButtonBase variant="primary" size="m" to="#"> Записаться на съёмку </ButtonBase>
+        <ButtonBase variant="secondary" size="m" to="#"> Смотреть портфолио </ButtonBase>
       </div>
 
       <div ref="statsRef" class="hero__stats">
@@ -62,17 +60,19 @@ const headingFirstRef = ref<HTMLElement | null>(null)
 const headingLastRef = ref<HTMLElement | null>(null)
 const badgeRef = ref<HTMLElement | null>(null)
 const contentRef = ref<HTMLElement | null>(null)
+const actionsRef = ref<HTMLElement | null>(null)
+
 const statsRef = ref<HTMLElement | null>(null)
 const heroRef = ref<HTMLElement | null>(null)
 
 useHeaderZoneObserver(
-    heroRef,
-    () => {
-      setForcedHeaderTheme('dark')
-    },
-    () => {
-      setForcedHeaderTheme(null)
-    }
+  heroRef,
+  () => {
+    setForcedHeaderTheme('dark')
+  },
+  () => {
+    setForcedHeaderTheme(null)
+  }
 )
 
 onMounted(() => {
@@ -83,6 +83,7 @@ onMounted(() => {
     .from(headingLastRef.value, { opacity: 0, x: -70 }, '-=0.75')
     .from(badgeRef.value, { opacity: 0, x: 50, duration: 0.7 }, '-=0.85')
     .from(contentRef.value, { opacity: 0, x: -50 }, '-=0.5')
+    .from(actionsRef.value, { opacity: 0, x: -50 }, '-=0.5')
     .from(
       statsRef.value!.querySelectorAll('.hero__stat'),
       { opacity: 0, x: -30, stagger: 0.12 },
@@ -128,6 +129,12 @@ onMounted(() => {
     justify-content: space-between;
     max-width: calc(var(--maxw) + var(--gutter) * 2);
     margin-inline: auto;
+    @include tablet-s {
+      padding-top: calc(var(--header-h) + var(--space-5));
+      padding-bottom: var(--space-7);
+      justify-content: initial;
+      gap: 30px;
+    }
   }
 
   &__genres {
@@ -199,13 +206,16 @@ onMounted(() => {
     font-weight: 400;
     color: rgba(255, 255, 255, 0.92);
     max-width: 26ch;
-    margin-top: var(--space-5);
+    // margin-top: var(--space-5);
     line-height: var(--leading-snug);
-    margin: 0;
+    @include tablet-s{
+        margin-bottom: auto;
+    }
   }
 
   &__actions {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: var(--space-4);
 
@@ -230,6 +240,16 @@ onMounted(() => {
       &:hover {
         background: rgba(255, 255, 255, 0.08);
         border-color: rgba(255, 255, 255, 0.55);
+      }
+    }
+
+    @include mobile {
+      width: 100%;
+      flex-direction: column;
+      justify-content: stretch;
+      order: 7;
+      :deep(.ui-button) {
+        width: 100%;
       }
     }
   }
