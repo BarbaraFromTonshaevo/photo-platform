@@ -47,7 +47,7 @@ const rootClasses = computed(() => ({
 .ui-input {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-2);
 
   &__label {
     font-family: var(--font-ui);

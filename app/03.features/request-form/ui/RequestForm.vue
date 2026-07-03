@@ -129,6 +129,10 @@ function reset() {
     border-radius: var(--radius-lg);
   }
 
+  @include mobile{
+    padding: var(--space-5);
+  }
+
   &__title {
     font-family: var(--font-display);
     font-size: var(--text-2xl);
@@ -158,7 +162,7 @@ function reset() {
   &__group {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--space-2);
   }
 
   &__group-label {
