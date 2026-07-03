@@ -1,83 +1,87 @@
 <template>
   <section class="about">
-    <div class="about__inner">
-      <div ref="imageColRef" class="about__image-col">
+    <div ref="innerRef" class="about__inner">
+      <div ref="imageRef" class="about__image-col">
         <div class="about__image-wrap">
           <img src="/images/home/about.png" alt="Варвара Елькина — фотограф" class="about__image" />
         </div>
         <div class="about__quote">&laquo;Снимаю свет и тишину&raquo;</div>
       </div>
 
-      <div ref="contentColRef" class="about__content-col">
+      <div class="about__content-col">
         <div class="about__label">О себе</div>
 
-        <h2 class="about__heading">
-          Хобби, которое <em>переросло</em> в&nbsp;профессию
-        </h2>
-
-        <div class="about__body">
-          <p>
-            Меня зовут Варвара. Я фотографирую больше восьми лет&nbsp;&mdash;
-            началось всё с плёночной камеры и привычки замечать то,
-            что обычно проходит мимо: луч на стене, поворот головы,
-            паузу перед словом.
-          </p>
-          <p>
-            Со временем съёмка перестала быть хобби. Сегодня это
-            профессия и способ сохранять подлинные моменты&nbsp;&mdash; без
-            наигранных поз и тяжёлой ретуши. Я работаю с естественным
-            светом и доверяю эмоции, а не постановке.
-          </p>
-        </div>
-
-        <p class="about__signature">&mdash;&nbsp;Варвара Елькина</p>
-
-        <ul class="about__traits">
-          <li>Естественный свет</li>
-          <li>Живые эмоции</li>
-          <li>Внимание к деталям</li>
-        </ul>
+        <h2 class="about__heading">Хобби, которое <em>переросло</em> в&nbsp;профессию</h2>
       </div>
+
+      <p class="about__content">
+        Меня зовут Варвара. Я фотографирую больше восьми лет&nbsp;&mdash; началось всё с плёночной
+        камеры и привычки замечать то, что обычно проходит мимо: луч на стене, поворот головы, паузу
+        перед словом.
+      </p>
+      <p class="about__content">
+        Со временем съёмка перестала быть хобби. Сегодня это профессия и способ сохранять подлинные
+        моменты&nbsp;&mdash; без наигранных поз и тяжёлой ретуши. Я работаю с естественным светом и
+        доверяю эмоции, а не постановке.
+      </p>
+
+      <p class="about__signature">&mdash;&nbsp;Варвара Елькина</p>
+      <ul class="about__traits">
+        <li>Естественный свет</li>
+        <li>Живые эмоции</li>
+        <li>Внимание к деталям</li>
+      </ul>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const imageColRef = ref<HTMLElement | null>(null)
-const contentColRef = ref<HTMLElement | null>(null)
+const imageRef = ref<HTMLElement | null>(null)
+const innerRef = ref<HTMLElement | null>(null)
+const scrollTriggers: ScrollTrigger[] = []
 
 onMounted(() => {
-  gsap.from(imageColRef.value, {
+  const imageTween = gsap.from(imageRef.value, {
     opacity: 0,
     x: -60,
     duration: 1,
     ease: 'power3.out',
     scrollTrigger: {
-      trigger: imageColRef.value,
-      start: 'top 80%',
-    },
+      trigger: imageRef.value,
+      start: 'top 80%'
+    }
   })
+  if (imageTween.scrollTrigger) scrollTriggers.push(imageTween.scrollTrigger)
 
-  const contentEls = contentColRef.value?.children
-  if (contentEls) {
-    gsap.from(Array.from(contentEls), {
-      opacity: 0,
-      y: 40,
-      duration: 0.85,
-      ease: 'power3.out',
-      stagger: 0.12,
-      scrollTrigger: {
-        trigger: contentColRef.value,
-        start: 'top 80%',
-      },
-    })
-  }
+  const label = innerRef.value?.querySelector('.about__label')
+  const heading = innerRef.value?.querySelector('.about__heading')
+  const contents = innerRef.value?.querySelectorAll('.about__content')
+  const signature = innerRef.value?.querySelector('.about__signature')
+  const traits = innerRef.value?.querySelector('.about__traits')
+
+  const contentTween = gsap.from([label, heading, contents, signature, traits], {
+    opacity: 0,
+    y: 40,
+    duration: 0.85,
+    ease: 'power3.out',
+    stagger: 0.12,
+    scrollTrigger: {
+      trigger: innerRef.value,
+      start: 'top 80%'
+    }
+  })
+  if (contentTween.scrollTrigger) scrollTriggers.push(contentTween.scrollTrigger)
+})
+
+onUnmounted(() => {
+  scrollTriggers.forEach(t => t.kill())
+  scrollTriggers.length = 0
 })
 </script>
 
@@ -87,24 +91,59 @@ onMounted(() => {
   color: var(--text);
   padding: var(--space-10) var(--gutter);
 
+  @include tablet-s{
+    padding-block: var(--space-8);
+  }
+
   &__inner {
     max-width: calc(var(--maxw) + var(--gutter) * 2);
     margin-inline: auto;
-    display: flex;
-    justify-content: space-between;
-    gap: var(--space-9);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: var(--space-5) var(--space-9);
     align-items: start;
+    @include laptop {
+      grid-gap: var(--space-5) var(--space-6);
+    }
+    @include tablet-s {
+      display: initial;
+    }
+    @include mobile{
+        display: flex;
+        flex-direction: column;
+    }
   }
 
   &__image-col {
     position: relative;
+    grid-row: span 4;
+    @include tablet {
+      height: fit-content;
+      margin: auto 0;
+    }
+    @include tablet-s {
+      width: 50%;
+      float: left;
+      padding-right: var(--space-5);
+      padding-bottom: var(--space-4);
+    }
+    @include mobile{
+        padding: 0;
+        width: 100%;
+        float: initial;
+    }
   }
 
   &__image-wrap {
     width: 100%;
     aspect-ratio: 4 / 5;
-    height: calc(100vh - var(--header-h) - var(--gutter) * 2 );
+    height: calc(100vh - var(--header-h) - var(--gutter) * 2);
     overflow: hidden;
+
+    @include laptop {
+      height: initial;
+      max-height: calc(100vh - var(--header-h) - var(--gutter) * 2);
+    }
 
     img {
       width: 100%;
@@ -126,12 +165,25 @@ onMounted(() => {
     font-family: var(--font-display);
     font-style: italic;
     font-size: var(--text-md);
+    @include tablet-s {
+      font-size: var(--text-sm);
+      bottom: var(--space-5);
+      left: calc(-1 * var(--space-3));
+      padding: var(--space-2) var(--space-3);
+    }
   }
 
   &__content-col {
     display: flex;
     flex-direction: column;
     gap: var(--space-6);
+    @include tablet-s {
+      margin: 0 auto var(--space-5);
+    }
+    @include mobile{
+        order: -1;
+        margin-bottom: 0;
+    }
   }
 
   &__label {
@@ -157,30 +209,33 @@ onMounted(() => {
     }
   }
 
-  &__body {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-
-    p {
-      font-family: var(--font-ui);
-      font-size: var(--text-base);
-      line-height: var(--leading-relaxed);
-      color: var(--text-soft);
-      margin: 0;
-    }
+  &__content {
+    font-family: var(--font-ui);
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--text-soft);
+    margin: 0;
   }
 
   &__signature {
+    grid-column: 2/3;
     font-family: var(--font-display);
     font-style: italic;
     font-size: var(--text-xl);
     font-weight: 400;
     color: inherit;
     margin: 0;
+    @include tablet-s {
+      margin-top: var(--space-5);
+      margin-bottom: var(--space-5);
+    }
+    @include mobile{
+        margin: 0;
+    }
   }
 
   &__traits {
+    grid-column: 2/3;
     display: flex;
     gap: var(--space-3) var(--space-5);
     list-style: none;
