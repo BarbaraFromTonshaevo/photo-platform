@@ -1,7 +1,7 @@
 <template>
   <section class="history">
-    <div ref="spacerRef" class="history__spacer" :style="{ height: spacerHeight + 'px' }">
-      <div class="history__sticky">
+    <div ref="spacerRef" class="history__spacer" :style="isDesktop ? { height: spacerHeight + 'px' } : {}">
+      <div class="history__sticky" :class="{ 'history__sticky--scroll': isDesktop }">
         <div class="history__inner">
           <div class="history__head">
             <div class="history__head-left">
@@ -19,7 +19,7 @@
             :speed="700"
             :space-between="50"
             :keyboard="{ enabled: true }"
-            :allow-touch-move="false"
+            :allow-touch-move="!isDesktop"
             class="history__swiper"
             @swiper="onSwiper"
             @slide-change="onSlideChange"
@@ -54,15 +54,16 @@
               direction="left"
               :disabled="activeIndex === 0"
               aria-label="Предыдущий слайд"
+              class="history__btn"
               @click="goToSlide(activeIndex - 1)"
             />
             <div class="history__timeline">
-              <div class="history__tl-track" :style="'--percent: ' + activeIndex / (slides.length - 1) * 100 + '%'" />
+              <div class="history__tl-track" :style="{ '--percent': activeIndex / (slides.length - 1) * 100 + '%' }" />
               <button
                 v-for="(slide, i) in slides"
                 :key="slide.year"
                 class="history__tl-item"
-                :class="[{ 'is-active': i === activeIndex }, { 'is-previous': i <= activeIndex }]"
+                :class="{ 'is-active': i === activeIndex, 'is-previous': i <= activeIndex }"
                 @click="goToSlide(i)"
               >
                 <span class="history__tl-dot" />
@@ -73,6 +74,7 @@
               direction="right"
               :disabled="activeIndex === slides.length - 1"
               aria-label="Следующий слайд"
+              class="history__btn"
               @click="goToSlide(activeIndex + 1)"
             />
           </div>
@@ -127,8 +129,13 @@ const spacerRef = ref<HTMLElement | null>(null)
 const swiperRef = ref<SwiperType | null>(null)
 const activeIndex = ref(0)
 const spacerHeight = ref(0)
+const isDesktop = ref(false)
 
 const pad = (n: number) => String(n).padStart(2, '0')
+
+let desktopMQ: MediaQueryList | null = null
+let isScrollDriven = false
+let hasEntered = false
 
 function getSlideTargets(slideEl: Element | undefined) {
   if (!slideEl) return null
@@ -151,7 +158,7 @@ function revealSlideContent(slideEl: Element | undefined) {
   const targets = getSlideTargets(slideEl)
   if (!targets) return
   const { big, side, year, subtitle, desc } = targets
-  if(!(side[0] && side[1])) return
+  if (!(side[0] && side[1])) return
   gsap
     .timeline({ delay: 0.08 })
     .to(year, { opacity: 1, y: 0, duration: 0.72, ease: 'power3.out' })
@@ -162,10 +169,6 @@ function revealSlideContent(slideEl: Element | undefined) {
     .to(side[1], { opacity: 1, y: 0, duration: 0.58, ease: 'power3.out' }, '-=0.36')
 }
 
-let isScrollDriven = false
-let hasEntered = false
-let ticking = false
-
 function updateSpacerHeight() {
   spacerHeight.value = window.innerHeight * slides.length
 }
@@ -173,18 +176,17 @@ function updateSpacerHeight() {
 function scrollToIndex(idx: number) {
   const spacer = spacerRef.value
   if (!spacer) return
-  const total = spacer.getBoundingClientRect().height - window.innerHeight
+  const rect = spacer.getBoundingClientRect()
+  const total = rect.height - window.innerHeight
   if (total <= 0) return
-  const wrapperTop = spacer.getBoundingClientRect().top + window.scrollY
-  const targetY = wrapperTop + (idx / (slides.length - 1)) * total
+  const targetY = rect.top + window.scrollY + (idx / (slides.length - 1)) * total
   lenis.scrollTo(targetY)
 }
 
 function goToSlide(idx: number) {
   const swiper = swiperRef.value
   if (!swiper) return
-  const clamped = Math.min(Math.max(idx, 0), slides.length - 1)
-  swiper.slideTo(clamped)
+  swiper.slideTo(Math.min(Math.max(idx, 0), slides.length - 1))
 }
 
 function updateFromScroll() {
@@ -210,27 +212,38 @@ function updateFromScroll() {
   }
 }
 
-function onScroll() {
-  if (ticking) return
-  ticking = true
-  requestAnimationFrame(() => {
-    updateFromScroll()
-    ticking = false
-  })
+function onBreakpointChange(e: MediaQueryListEvent) {
+  const wasDesktop = isDesktop.value
+  isDesktop.value = e.matches
+  if (isDesktop.value) {
+    updateSpacerHeight()
+    if (!wasDesktop) {
+      hasEntered = false
+      lenis.on('scroll', updateFromScroll)
+    }
+  } else if (wasDesktop) {
+    lenis.off('scroll', updateFromScroll)
+  }
 }
 
 function onResize() {
-  updateSpacerHeight()
+  if (isDesktop.value) updateSpacerHeight()
 }
 
 onMounted(() => {
-  updateSpacerHeight()
-  lenis.on('scroll', onScroll)
+  desktopMQ = window.matchMedia('(min-width: 1025px)')
+  isDesktop.value = desktopMQ.matches
+  if (isDesktop.value) {
+    updateSpacerHeight()
+    lenis.on('scroll', updateFromScroll)
+  }
+  desktopMQ.addEventListener('change', onBreakpointChange)
   window.addEventListener('resize', onResize)
 })
 
 onUnmounted(() => {
-  lenis.off('scroll', onScroll)
+  lenis.off('scroll', updateFromScroll)
+  desktopMQ?.removeEventListener('change', onBreakpointChange)
   window.removeEventListener('resize', onResize)
 })
 
@@ -241,7 +254,7 @@ function onSwiper(swiper: SwiperType) {
 function onSlideChange(swiper: SwiperType) {
   activeIndex.value = swiper.activeIndex
   hideSlideContent(swiper.slides[swiper.activeIndex])
-  if (!isScrollDriven) scrollToIndex(swiper.activeIndex)
+  if (!isScrollDriven && isDesktop.value) scrollToIndex(swiper.activeIndex)
   isScrollDriven = false
 }
 
@@ -260,13 +273,20 @@ function onSlideChangeTransitionEnd(swiper: SwiperType) {
   }
 
   &__sticky {
-    position: sticky;
-    top: 0;
-    height: 100vh;
     display: flex;
     align-items: center;
     padding: var(--space-10) var(--gutter) var(--space-8);
     overflow-x: clip;
+
+    &--scroll {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    @include tablet-s {
+      padding-block: var(--space-8);
+    }
   }
 
   &__inner {
@@ -275,7 +295,7 @@ function onSlideChangeTransitionEnd(swiper: SwiperType) {
     margin-inline: auto;
     display: flex;
     flex-direction: column;
-    gap: var(--space-8);
+    gap: var(--space-5);
   }
 
   // ── Header ──────────────────────────────────────────────────────────
@@ -318,8 +338,9 @@ function onSlideChangeTransitionEnd(swiper: SwiperType) {
     font-style: italic;
     white-space: nowrap;
     padding-bottom: 6px;
-    &--accent{
-        color: var(--accent-contrast);
+
+    &--accent {
+      color: var(--accent-contrast);
     }
   }
 
@@ -332,6 +353,16 @@ function onSlideChangeTransitionEnd(swiper: SwiperType) {
     display: flex;
     gap: var(--space-9);
     align-items: stretch;
+    justify-content: space-between;
+
+    @include laptop {
+      gap: var(--space-7);
+    }
+
+    @include tablet-s {
+      flex-direction: column;
+      gap: var(--space-5);
+    }
   }
 
   // ── Slide content (left) ─────────────────────────────────────────────
@@ -342,6 +373,15 @@ function onSlideChangeTransitionEnd(swiper: SwiperType) {
     justify-content: center;
     gap: var(--space-5);
     padding-right: var(--space-6);
+
+    @include laptop {
+      padding-right: 0;
+      gap: var(--space-3);
+    }
+
+    @include tablet-s {
+      gap: var(--space-2);
+    }
   }
 
   &__year {
@@ -373,17 +413,30 @@ function onSlideChangeTransitionEnd(swiper: SwiperType) {
 
   // ── Photos (right) ───────────────────────────────────────────────────
   &__photos {
-    flex: 1;
     display: grid;
     grid-template-columns: 1fr 0.48fr;
     gap: var(--space-4);
-    height: clamp(380px, 46vh, 560px);
+    aspect-ratio: 1.2;
+    height: 60vh;
+
+    @include tablet-s {
+      height: initial;
+      width: 100%;
+    }
+
+    @include mobile {
+      gap: var(--space-2);
+    }
   }
 
   &__photos-side {
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
+
+    @include mobile {
+      gap: var(--space-2);
+    }
   }
 
   &__photo {
@@ -431,6 +484,16 @@ function onSlideChangeTransitionEnd(swiper: SwiperType) {
     display: flex;
     align-items: center;
     gap: var(--space-6);
+
+    @include tablet-s {
+      gap: var(--space-3);
+    }
+  }
+
+  &__btn {
+    @include mobile {
+      --size: 40px;
+    }
   }
 
   &__timeline {
@@ -449,16 +512,17 @@ function onSlideChangeTransitionEnd(swiper: SwiperType) {
     right: 5px;
     height: 1px;
     background: var(--line-strong);
-        &::after{
-        content: '';
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        width: var(--percent);
-        background-color: var(--accent);
-        transition: width 0.2s;
+
+    &::after {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: var(--percent);
+      background-color: var(--accent);
+      transition: width 0.2s;
     }
   }
 
