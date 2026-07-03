@@ -9,14 +9,16 @@
         <div class="album__badge">до конца сезона</div>
       </div>
 
-      <div ref="contentColRef" class="album__content-col">
+      <div ref="headingColRef" class="album__content-head">
         <div class="album__label">Спецпредложение</div>
 
         <h2 class="album__heading">
           Печатный фотоальбом<br />
           <em>ручной сборки</em>
         </h2>
+      </div>
 
+      <div ref="contentColRef" class="album__content-body">
         <p class="album__desc">
           Ваша съёмка живёт не только в телефоне. Я собираю плотный альбом на дизайнерской бумаге с
           разворотами на всю ширину&nbsp;&mdash; вещь, которую хочется держать в руках и передавать
@@ -25,24 +27,16 @@
 
         <ul class="album__features">
           <li>
-            <Icon
-              class="album__icon"
-              name="ph:check"
-              aria-hidden="true"
-              width="1.3em"
-            />Дизайнерская бумага, печать музейного качества
+            <Icon class="album__icon" name="ph:check" aria-hidden="true" width="1.3em" />
+            Дизайнерская бумага, печать музейного качества
           </li>
           <li>
-            <Icon class="album__icon" name="ph:check" aria-hidden="true" width="1.3em" />Развороты
-            без разрыва, тиснение имени на обложке
+            <Icon class="album__icon" name="ph:check" aria-hidden="true" width="1.3em" />
+            Развороты без разрыва, тиснение имени на обложке
           </li>
           <li>
-            <Icon
-              class="album__icon"
-              name="ph:check"
-              aria-hidden="true"
-              width="1.3em"
-            />Индивидуальная вёрстка под вашу историю
+            <Icon class="album__icon" name="ph:check" aria-hidden="true" width="1.3em" />
+            Индивидуальная вёрстка под вашу историю
           </li>
         </ul>
 
@@ -62,7 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -70,9 +64,11 @@ gsap.registerPlugin(ScrollTrigger)
 
 const imageColRef = ref<HTMLElement | null>(null)
 const contentColRef = ref<HTMLElement | null>(null)
+const headingColRef = ref<HTMLElement | null>(null)
+const scrollTriggers: ScrollTrigger[] = []
 
 onMounted(() => {
-  gsap.from(imageColRef.value, {
+  const imageTween = gsap.from(imageColRef.value, {
     opacity: 0,
     x: -60,
     duration: 1,
@@ -82,10 +78,27 @@ onMounted(() => {
       start: 'top 80%'
     }
   })
+  if (imageTween.scrollTrigger) scrollTriggers.push(imageTween.scrollTrigger)
+
+  const headingEls = headingColRef.value?.children
+  if (headingEls) {
+    const headingTween = gsap.from(Array.from(headingEls), {
+      opacity: 0,
+      y: 40,
+      duration: 0.85,
+      ease: 'power3.out',
+      stagger: 0.12,
+      scrollTrigger: {
+        trigger: headingColRef.value,
+        start: 'top 80%'
+      }
+    })
+    if (headingTween.scrollTrigger) scrollTriggers.push(headingTween.scrollTrigger)
+  }
 
   const contentEls = contentColRef.value?.children
   if (contentEls) {
-    gsap.from(Array.from(contentEls), {
+    const contentTween = gsap.from(Array.from(contentEls), {
       opacity: 0,
       y: 40,
       duration: 0.85,
@@ -96,7 +109,13 @@ onMounted(() => {
         start: 'top 80%'
       }
     })
+    if (contentTween.scrollTrigger) scrollTriggers.push(contentTween.scrollTrigger)
   }
+})
+
+onUnmounted(() => {
+  scrollTriggers.forEach((t) => t.kill())
+  scrollTriggers.length = 0
 })
 </script>
 
@@ -106,17 +125,35 @@ onMounted(() => {
   color: var(--text);
   padding: var(--space-10) var(--gutter);
 
+  @include tablet-s {
+    padding-block: var(--space-8);
+  }
+
   &__inner {
     max-width: calc(var(--maxw) + var(--gutter) * 2);
     margin-inline: auto;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--space-9);
+    gap: var(--space-5) var(--space-9);
     align-items: start;
+    @include tablet {
+      gap: var(--space-6);
+    }
+    @include mobile {
+      display: flex;
+      flex-direction: column;
+    }
   }
 
   &__image-col {
     position: relative;
+    grid-row: span 2;
+    @include tablet-s {
+      grid-row: initial;
+    }
+    @include mobile {
+      width: 100%;
+    }
   }
 
   &__image-wrap {
@@ -181,10 +218,25 @@ onMounted(() => {
     z-index: 2;
   }
 
-  &__content-col {
+  &__content-head {
     display: flex;
     flex-direction: column;
     gap: var(--space-6);
+    @include tablet-s {
+      margin: auto 0;
+    }
+    @include mobile {
+      order: -1;
+    }
+  }
+
+  &__content-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    @include tablet-s {
+      grid-column: span 2;
+    }
   }
 
   &__label {
@@ -236,7 +288,7 @@ onMounted(() => {
     }
   }
 
-  &__icon{
+  &__icon {
     color: var(--accent);
   }
 
@@ -245,7 +297,8 @@ onMounted(() => {
     padding-top: var(--space-5);
     display: flex;
     align-items: center;
-    gap: var(--space-6);
+    flex-wrap: wrap;
+    gap: var(--space-4) var(--space-6);
   }
 
   &__price-col {
@@ -266,7 +319,6 @@ onMounted(() => {
     display: flex;
     align-items: baseline;
     gap: var(--space-4);
-
   }
 
   &__price-current {
