@@ -130,9 +130,11 @@ onMounted(() => {
     })
   }
 
+  const gutter = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--gutter')) || 48
+
   gsap.from(formColRef.value, {
     opacity: 0,
-    x: 48,
+    x: Math.min(48, gutter - 1),
     duration: 1,
     ease: 'power3.out',
     scrollTrigger: {
