@@ -10,9 +10,9 @@
       <h2 class="genre-slide__title">{{ title }}</h2>
       <p class="genre-slide__desc">{{ description }}</p>
 
-      <NuxtLink :to="to" class="genre-slide__btn">
-        Смотреть галерею <span aria-hidden="true">&nbsp;→</span>
-      </NuxtLink>
+      <ButtonBase :to="to" variant="secondary" class="genre-slide__btn" :arrow="true">
+        Смотреть галерею
+      </ButtonBase>
     </div>
 
     <div class="genre-slide__strip" aria-hidden="true">
@@ -127,7 +127,7 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .genre-slide {
-  --info-w: clamp(260px, 40vw, 460px);
+  --info-w: clamp(360px, 40vw, 460px);
 
   position: relative;
   display: flex;
@@ -197,26 +197,13 @@ onUnmounted(() => {
     max-width: 28ch;
   }
 
-  &__btn {
-    display: inline-flex;
-    align-items: center;
-    padding: var(--space-3) var(--space-5);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: var(--radius-pill);
-    font-family: var(--font-ui);
-    font-size: var(--text-sm);
-    font-weight: 500;
-    letter-spacing: var(--tracking-wide);
-    color: rgba(255, 255, 255, 0.9);
-    text-decoration: none;
-    width: fit-content;
-    transition:
-      border-color var(--dur-fast) var(--ease),
-      background var(--dur-fast) var(--ease);
-
-    &:hover {
-      border-color: rgba(255, 255, 255, 0.6);
-      background: rgba(255, 255, 255, 0.05);
+  &__btn.ui-button {
+    color: oklch(0.925 0.010 84);
+    background-color: transparent;
+    border-color: oklch(85.988% 0.01387 78.171 / 0.5);
+    &:hover{
+        border-color: oklch(85.988% 0.01387 78.171);
+        background-color: oklch(0.965 0.012 84 / 0.1);;
     }
   }
 
