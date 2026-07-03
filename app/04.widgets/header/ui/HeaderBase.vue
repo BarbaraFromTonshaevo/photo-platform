@@ -48,10 +48,10 @@
         <LocaleToggle class="header__locale" />
         <span class="header__sep" aria-hidden="true" />
         <ThemeToggle class="header__theme" />
-        <ButtonBurger class="header__burger" :is-open="isMenuActive" @click="toggleMenu" />
+        <ButtonBurger v-if="isLaptop" class="header__burger" :is-open="isMenuActive" @click="openMenu" />
       </div>
     </div>
-    <HeaderMenu v-if="isLaptop" :is-active="isMenuActive" />
+    <HeaderMenu v-if="isLaptop" :is-active="isMenuActive" @close-menu="closeMenu" />
   </header>
 </template>
 
@@ -68,8 +68,11 @@ const { forcedHeaderTheme } = storeToRefs(viewerStore)
 const isLaptop = useMatchMedia('(max-width: 1365px)')
 
 const isMenuActive = ref(false)
-function toggleMenu(){
-    isMenuActive.value = !isMenuActive.value
+function openMenu(){
+    isMenuActive.value = true
+}
+function closeMenu(){
+    isMenuActive.value = false
 }
 </script>
 

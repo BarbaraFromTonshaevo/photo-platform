@@ -1,9 +1,9 @@
 <template>
-  <div class="header-menu" :class="{'is-active': isActive}">
-    <div class="header-menu__body">
+  <dialog ref="menuRef" class="header-menu" data-lenis-prevent>
+    <div ref="leftRef" class="header-menu__body">
       <nav class="header-menu__nav">
         <NuxtLink
-          v-for="link, index in siteStore.navLinks"
+          v-for="(link, index) in siteStore.navLinks"
           :key="link.to"
           :to="link.to"
           class="header-menu__nav-link"
@@ -48,56 +48,222 @@
         </div>
       </div>
     </div>
-    <div class="header-menu__bg">
-      <img src="/images/home/menu.png" alt="" />
+    <div ref="rightRef" class="header-menu__bg">
+      <!-- <img src="/images/home/menu.png" alt="" /> -->
+      <ButtonBurger :is-open="isActive" class="header-menu__close" @click="closeMenu" />
+      <NuxtImg src="/images/home/menu.png" alt="Фотография с камерой" class="header-menu__image" />
     </div>
-  </div>
+  </dialog>
 </template>
 
 <script setup lang="ts">
 import { useSiteStore } from '@entities/site'
+import { gsap } from 'gsap'
+// import { useLenis } from '@shared/lib/useLenis'
+
+// const lenis = useLenis()
+const props = defineProps<{
+  isActive: boolean
+}>()
 
 const { t } = useI18n()
 const siteStore = useSiteStore()
+const menuRef = ref<HTMLDialogElement | null>(null)
+const leftRef = ref<HTMLElement | null>(null)
+const rightRef = ref<HTMLElement | null>(null)
+let isAnimating = false
+const isDesktop = () => window.matchMedia('(min-width: 768px)').matches
 
-defineProps<{
-    isActive: boolean
-}>()
+function openMenu() {
+  if (isAnimating) return
+  isAnimating = true
+  menuRef.value?.showModal()
+//   lenis.stop()
+
+  const img = rightRef.value?.querySelector('.header-menu__image')
+  const navLinks = leftRef.value?.querySelectorAll('.header-menu__nav-link')
+  const links = leftRef.value?.querySelectorAll('.header-menu__link')
+  const location = leftRef.value?.querySelector('.header-menu__locations')
+  const actions = leftRef.value?.querySelector('.header-menu__actions')
+
+  const tl = gsap.timeline({
+    onComplete: () => {
+      isAnimating = false
+    }
+  })
+
+  // Начальное состояние панелей через clip-path
+  tl.set(leftRef.value, { clipPath: 'inset(0 0 0 100%)', x: isDesktop() ? '100%' : 0 })
+  tl.set(rightRef.value, { clipPath: 'inset(0 0 0 100%)' })
+  tl.set(img!, { scale: 1.4 })
+  tl.set([navLinks, links, location], { clipPath: 'inset(0 0 100% 0)' })
+  tl.set(actions!, { opacity: 0 })
+  // ── Фаза 1: блоки раскрываются через clip-path ──
+  tl.to(leftRef.value, {
+    clipPath: 'inset(0 0 0 0%)',
+    x: 0,
+    duration: 1,
+    ease: 'power3.inOut'
+  })
+    .to(
+      rightRef.value,
+      {
+        clipPath: 'inset(0 0 0 0%)',
+        duration: 1,
+        ease: 'power3.inOut'
+      },
+      '<'
+    )
+    .to(
+      img!,
+      {
+        scale: 1,
+        duration: 1,
+        ease: 'power3.inOut'
+      },
+      '<'
+    )
+
+  // ── Фаза 2: шторка открывается на всех элементах одновременно ──
+  tl.to(
+    [navLinks, links, location],
+    {
+      clipPath: 'inset(0 0 0% 0)',
+      duration: 0.8,
+      ease: 'power2.out'
+    },
+    '-=0.3'
+  ).to(
+    actions!,
+    {
+      opacity: 1,
+      duration: 1,
+      ease: 'power2.out'
+    },
+    '<'
+  )
+}
 
 const emit = defineEmits(['closeMenu'])
-function closeMenu(){
-    emit('closeMenu')
+function closeMenu() {
+  if (isAnimating) return
+  isAnimating = true
+
+  const img = rightRef.value?.querySelector('.header-menu__image')
+  const navLinks = leftRef.value?.querySelectorAll('.header-menu__nav-link')
+  const links = leftRef.value?.querySelectorAll('.header-menu__link')
+  const location = leftRef.value?.querySelector('.header-menu__locations')
+  const actions = leftRef.value?.querySelector('.header-menu__actions')
+
+  const tl = gsap.timeline({
+    onComplete: () => {
+      // Закрываем dialog только после завершения анимации
+      menuRef.value?.close()
+      emit('closeMenu')
+      isAnimating = false
+    //   lenis.start()
+    }
+  })
+  tl.to(
+    actions!,
+    {
+      opacity: 0,
+      duration: 1,
+      ease: 'power2.in'
+    },
+    '<'
+  ).to(
+    [navLinks, links, location],
+    {
+      clipPath: 'inset(0 0 100% 0)',
+      duration: 0.8,
+      ease: 'power2.in'
+    },
+    '<'
+  )
+
+  // ── Фаза 2: панели уходят через clip-path
+  tl.to(leftRef.value, {
+    clipPath: 'inset(0 0 0 100%)',
+    x: isDesktop() ? '100%' : 0,
+    duration: 1,
+    ease: 'power3.in'
+  })
+  tl.to(
+    rightRef.value,
+    {
+      clipPath: 'inset(0 0 0 100%)',
+      duration: 1,
+      ease: 'power3.in'
+    },
+    '<'
+  )
+  tl.to(
+    img!,
+    {
+      scale: 1.4,
+      duration: 1,
+      ease: 'power3.in'
+    },
+    '<'
+  )
 }
+
+watch(
+  () => props.isActive,
+  (newVal) => {
+    if (newVal) {
+      openMenu()
+    } else {
+      // Закрытие через кнопку уже вызывает closeMenu() напрямую,
+      // но на случай если store меняется извне — тоже обрабатываем
+      if (menuRef.value?.open) closeMenu()
+    }
+  }
+)
 </script>
 
 <style lang="scss" scoped>
 .header-menu {
-  position: absolute;
+  position: fixed;
+  inset: 0;
   top: 0;
   left: 0;
   width: 100%;
   height: 100vh;
-  background-color: var(--bg-tint);
   color: var(--text);
+  border: none;
+  padding: 0;
+  margin: 0;
   display: flex;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity var(--dur-fast) var(--ease), visibility var(--dur-fast) var(--ease);
+  background-color: transparent;
+  transition:
+    opacity var(--dur-fast) var(--ease),
+    visibility var(--dur-fast) var(--ease);
   z-index: 1;
-  &.is-active{
-    opacity: 1;
-    visibility: visible;
+  max-width: unset;
+  max-height: unset;
+
+  &::backdrop {
+    display: none;
+  }
+
+  &:not([open]) {
+    display: none;
   }
 
   &__body {
     position: relative;
     display: flex;
     flex-direction: column;
-    flex: 1;
+    width: 50%;
+    flex-shrink: 0;
     padding-block: var(--space-9) var(--space-7);
     padding-left: var(--gutter);
     padding-right: var(--space-5);
-    overflow: clip;
+    z-index: 2;
+    background-color: var(--bg-tint);
+    overflow: hidden;
 
     &::before {
       content: '';
@@ -114,8 +280,12 @@ function closeMenu(){
       opacity: 0.1;
     }
 
-    @include tablet{
-        padding-block: var(--space-7) var(--space-5);
+    @include tablet {
+      padding-block: var(--space-7) var(--space-5);
+    }
+
+    @include tablet-s{
+        width: 100%;
     }
   }
 
@@ -132,25 +302,9 @@ function closeMenu(){
     text-transform: uppercase;
   }
 
-  &__nav-num{
+  &__nav-num {
     color: var(--text-faint);
     font-size: var(--text-lg);
-  }
-
-  &__bg {
-    display: flex;
-    height: 100%;
-    width: 50%;
-    img {
-      display: flex;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    @include tablet-s{
-        width: 0;
-        display: none;
-    }
   }
 
   &__socials {
@@ -199,12 +353,12 @@ function closeMenu(){
     }
   }
 
-  &__locations{
+  &__locations {
     display: flex;
     gap: var(--space-1) var(--space-4);
-    @include tablet{
-        flex-wrap: wrap;
-        flex-direction: column;
+    @include tablet {
+      flex-wrap: wrap;
+      flex-direction: column;
     }
   }
 
@@ -214,16 +368,52 @@ function closeMenu(){
     font-family: var(--font-ui);
     font-size: var(--text-base);
     color: var(--text-muted);
-    &:not(:last-child)::after{
-        content: '·';
+    &:not(:last-child)::after {
+      content: '·';
     }
-    @include tablet{
-        flex-wrap: wrap;
-        &::after{
-            display: none;
-        }
+    @include tablet {
+      flex-wrap: wrap;
+      &::after {
+        display: none;
+      }
+    }
+  }
+  &__bg {
+    display: flex;
+    width: 50%;
+    height: 100%;
+    flex-shrink: 0;
+    z-index: 1;
+    position: relative;
+    overflow: clip;
+    @include tablet-s {
+      width: fit-content;
+      height: fit-content;
+      position: absolute;
+      right: var(--gutter);
+      top: 20px;
+      z-index: 2;
     }
   }
 
+  &__image {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    @include tablet-s {
+      display: none;
+    }
+  }
+
+  &__close {
+    position: absolute;
+    right: var(--gutter);
+    top: 20px;
+    z-index: 1;
+    @include tablet-s {
+      position: static;
+    }
+  }
 }
 </style>
