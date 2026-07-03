@@ -149,12 +149,19 @@ onMounted(() => {
   color: var(--text);
   padding: var(--space-10) var(--gutter);
 
+  @include tablet-s {
+    padding-block: var(--space-8);
+  }
+
   &__inner {
     max-width: calc(var(--maxw) + var(--gutter) * 2);
     margin-inline: auto;
     display: flex;
     flex-direction: column;
     gap: var(--space-7);
+    @include mobile{
+        gap: var(--space-5);
+    }
   }
 
   &__label {
@@ -186,6 +193,7 @@ onMounted(() => {
 
     @include laptop {
       grid-template-columns: 1fr;
+      gap: var(--space-7);
     }
   }
 
@@ -193,6 +201,9 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     gap: var(--space-8);
+    @include tablet {
+      gap: var(--space-6);
+    }
   }
 
   &__right {
@@ -277,7 +288,7 @@ onMounted(() => {
 
   &__info {
     display: flex;
-    gap: var(--space-8);
+    gap: var(--space-6) var(--space-8);
     flex-wrap: wrap;
   }
 
