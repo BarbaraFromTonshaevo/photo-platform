@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <g fill="#8a9a63">
+    <g transform="translate(50,50)">
+      <g id="petal0"><path d="M0,-6 C10,-16 14,-30 0,-42 C-14,-30 -10,-16 0,-6 Z"/></g>
+      <use href="#petal0" transform="rotate(72)"/>
+      <use href="#petal0" transform="rotate(144)"/>
+      <use href="#petal0" transform="rotate(216)"/>
+      <use href="#petal0" transform="rotate(288)"/>
+      <circle r="7" fill="#5f6e42"/>
+    </g>
+  </g>
+</svg>
