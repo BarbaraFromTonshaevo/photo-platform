@@ -7,7 +7,6 @@
         class="hero__bg-img"
         width="2500"
         height="1666"
-        loading="lazy"
         format="webp"
         sizes="100vw sm:100vw md:100vw"
         quality="80"
