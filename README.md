@@ -2,6 +2,8 @@
 
 > A photographer's personal platform — polished public portfolio, magic-link client cabinet, and a password-gated admin panel. Built as a portfolio project to demonstrate production-grade frontend architecture.
 
+**Live demo:** [photo-platform-ochre.vercel.app](https://photo-platform-ochre.vercel.app/)
+
 ![Nuxt](https://img.shields.io/badge/Nuxt-4-00DC82?style=flat&logo=nuxt.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat&logo=typescript&logoColor=white)
 ![Vue](https://img.shields.io/badge/Vue-3-4FC08D?style=flat&logo=vue.js&logoColor=white)
