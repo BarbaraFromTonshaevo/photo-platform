@@ -49,14 +49,18 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useMatchMedia } from '@shared/lib/useMatchMedia'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const imageRef = ref<HTMLElement | null>(null)
 const innerRef = ref<HTMLElement | null>(null)
 const scrollTriggers: ScrollTrigger[] = []
+const isMobile = useMatchMedia('(max-width: 480px)')
 
 onMounted(() => {
+  if (isMobile.value) return
+
   const imageTween = gsap.from(imageRef.value, {
     opacity: 0,
     x: -60,

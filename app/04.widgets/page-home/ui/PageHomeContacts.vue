@@ -66,6 +66,7 @@ import { ref, computed, onMounted } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useSiteStore } from '@entities/site'
+import { useMatchMedia } from '@shared/lib/useMatchMedia'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -98,8 +99,11 @@ const telegramHandle = computed(() => {
 
 const leftColRef = ref<HTMLElement | null>(null)
 const formColRef = ref<HTMLElement | null>(null)
+const isMobile = useMatchMedia('(max-width: 480px)')
 
 onMounted(() => {
+  if (isMobile.value) return
+
   const priceItems = leftColRef.value?.querySelectorAll('.contacts__price-item')
   if (priceItems?.length) {
     gsap.from(priceItems, {
