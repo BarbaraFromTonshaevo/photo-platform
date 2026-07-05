@@ -1,10 +1,10 @@
 <template>
   <div class="page-home">
     <PageHomeHero />
-    <PageHomeAbout />
-    <PageHomePortfolio />
-    <PageHomeHistory />
-    <PageHomeAlbum />
-    <PageHomeContacts />
+    <LazyPageHomeAbout />
+    <LazyPageHomePortfolio />
+    <LazyPageHomeHistory />
+    <LazyPageHomeAlbum />
+    <LazyPageHomeContacts />
   </div>
 </template>
