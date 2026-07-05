@@ -1,5 +1,5 @@
 <template>
-  <section class="genre-slide">
+  <section ref="slideRef" class="genre-slide">
     <div ref="infoRef" class="genre-slide__info">
       <div class="genre-slide__meta">
         <span class="genre-slide__index">{{ formattedIndex }}</span>
@@ -23,11 +23,13 @@
           class="genre-slide__photo"
           :class="{ 'genre-slide__photo--placeholder': !photo.src }"
         >
-          <img
+          <NuxtImg
             v-if="photo.src"
             :src="photo.src"
             :alt="photo.alt ?? ''"
             loading="lazy"
+            format="webp"
+            quality="80"
             draggable="false"
           />
         </figure>
@@ -39,6 +41,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import gsap from 'gsap'
+import { useInViewport } from '~/01.shared/lib/useInViewport'
 
 export interface GenrePhoto {
   src?: string
@@ -61,7 +64,17 @@ const STRIP_SPEED = 100 // px/sec — постоянная скорость ле
 
 const infoRef = ref<HTMLElement | null>(null)
 const trackRef = ref<HTMLElement | null>(null)
+const slideRef = ref<HTMLElement | null>(null)
 let stripTween: gsap.core.Tween | null = null
+
+// Лента крутится бесконечно (repeat: -1), поэтому вне вьюпорта её нужно
+// ставить на паузу — иначе все жанры анимируются одновременно даже вне экрана
+const isInViewport = useInViewport(slideRef)
+
+watch(isInViewport, (visible) => {
+  if (visible) stripTween?.play()
+  else stripTween?.pause()
+})
 
 function getInfoChildren() {
   return infoRef.value ? Array.from(infoRef.value.children) : []
@@ -115,7 +128,8 @@ onMounted(() => {
       x: -halfWidth,
       duration: halfWidth / STRIP_SPEED,
       ease: 'none',
-      repeat: -1
+      repeat: -1,
+      paused: !isInViewport.value
     })
   })
 })

@@ -1,26 +1,4 @@
 <template>
-  <!--
-    РЕКОМЕНДАЦИИ ПО ИНТЕГРАЦИИ С ШАПКОЙ (HeaderBase):
-
-    На скриншоте в шапке видна жанровая навигация (Репортаж / Студийная / ...).
-    Варианты совмещения с уже существующим HeaderBase:
-
-    1. Pinia-стор (рекомендуется):
-       Добавить usePortfolioStore с { isActive: boolean; activeIndex: number; genres: Genre[] }.
-       PageHomePortfolio пишет туда текущее состояние.
-       HeaderBase читает стор и когда isActive=true — заменяет siteStore.navLinks
-       на список жанров (через v-if + transition). Это явный, тестируемый подход.
-
-    2. Provide / Inject:
-       PageHomePortfolio передаёт { activeIndex, genres } через provide('portfolioNav').
-       HeaderBase получает их через inject и отображает доп. навигацию.
-       Проще Pinia, но менее наблюдаемо.
-
-    3. CSS-класс на body/layout:
-       Когда секция активна — добавить класс на document.body.
-       HeaderBase реагирует на CSS-переменную через :global(.portfolio-active) .header__nav.
-       Наименее явный, но не требует изменений в стейт-менеджменте.
-  -->
   <div ref="portfolioRef" class="portfolio">
     <div ref="slidesRef" class="portfolio__slides">
       <PageHomePortfolioGenre
@@ -36,6 +14,7 @@
       <button
         v-for="(genre, i) in genres"
         :key="genre.index"
+        type="button"
         :class="['portfolio__dot', { 'is-active': activeIndex === i }]"
         :aria-label="genre.title"
         :aria-current="activeIndex === i ? 'true' : undefined"
