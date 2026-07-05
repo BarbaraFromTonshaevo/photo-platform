@@ -3,7 +3,17 @@
     <div ref="innerRef" class="about__inner">
       <div ref="imageRef" class="about__image-col">
         <div class="about__image-wrap">
-          <img src="/images/home/about.png" alt="Варвара Елькина — фотограф" class="about__image" />
+          <NuxtImg
+            src="/images/home/about.png"
+            alt="Варвара Елькина — фотограф"
+            class="about__image"
+            width="719"
+            height="1070"
+            loading="lazy"
+            format="webp"
+            sizes="100vw sm:50vw"
+            quality="80"
+          />
         </div>
         <div class="about__quote">&laquo;Снимаю свет и тишину&raquo;</div>
       </div>
