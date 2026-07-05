@@ -15,9 +15,9 @@ const REPORTAGE_PHOTOS: GenrePhoto[] = [
   { src: '/images/examples/reportage/img_1.jpg' },
   { src: '/images/examples/reportage/img_2.jpg' },
   { src: '/images/examples/reportage/img_3.jpg' },
-  { src: '/images/examples/reportage/img_4.JPG' },
-  { src: '/images/examples/reportage/img_5.JPG' },
-  { src: '/images/examples/reportage/img_6.JPG' },
+  { src: '/images/examples/reportage/img_4.jpg' },
+  { src: '/images/examples/reportage/img_5.jpg' },
+  { src: '/images/examples/reportage/img_6.jpg' },
   { src: '/images/examples/reportage/img_7.jpg' },
   { src: '/images/examples/reportage/img_8.jpg' },
   { src: '/images/examples/reportage/img_9.jpg' },
@@ -43,11 +43,11 @@ const CREATIVE_PHOTOS: GenrePhoto[] = [
   { src: '/images/examples/creative/img_3.jpg' },
   { src: '/images/examples/creative/img_4.jpg' },
   { src: '/images/examples/creative/img_5.jpg' },
-  { src: '/images/examples/creative/img_6.png' },
-  { src: '/images/examples/creative/img_7.png' },
-  { src: '/images/examples/creative/img_8.png' },
-  { src: '/images/examples/creative/img_9.png' },
-  { src: '/images/examples/creative/img_10.png' }
+  { src: '/images/examples/creative/img_6.jpg' },
+  { src: '/images/examples/creative/img_7.jpg' },
+  { src: '/images/examples/creative/img_8.jpg' },
+  { src: '/images/examples/creative/img_9.jpg' },
+  { src: '/images/examples/creative/img_10.jpg' }
 ]
 
 const CHILDREN_PHOTOS: GenrePhoto[] = [
