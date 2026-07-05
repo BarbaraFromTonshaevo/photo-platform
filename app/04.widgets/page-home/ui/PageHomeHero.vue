@@ -1,7 +1,17 @@
 <template>
   <section ref="heroRef" class="hero">
     <div class="hero__bg" aria-hidden="true">
-      <img src="/images/home/hero.jpg" alt="" class="hero__bg-img" />
+      <NuxtImg
+        src="/images/home/hero.jpg"
+        alt=""
+        class="hero__bg-img"
+        width="2500"
+        height="1666"
+        loading="lazy"
+        format="webp"
+        sizes="100vw sm:100vw md:100vw"
+        quality="80"
+      />
       <div class="hero__overlay" />
     </div>
 
