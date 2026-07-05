@@ -51,7 +51,7 @@
     <div ref="rightRef" class="header-menu__bg">
       <!-- <img src="/images/home/menu.png" alt="" /> -->
       <ButtonBurger :is-open="isActive" class="header-menu__close" @click="closeMenu" />
-      <NuxtImg src="/images/home/menu.png" alt="Фотография с камерой" class="header-menu__image" />
+      <NuxtImg src="/images/home/menu.jpg" alt="Фотография с камерой" class="header-menu__image" />
     </div>
   </dialog>
 </template>
