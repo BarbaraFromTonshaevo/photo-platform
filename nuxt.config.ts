@@ -50,6 +50,12 @@ export default defineNuxtConfig({
     }],
   ],
 
+  image: {
+    // Дефолт на случай, если конкретный <NuxtImg> не укажет format/quality явно
+    format: ['webp'],
+    quality: 80,
+  },
+
   i18n: {
     locales: [
       { code: 'ru', name: 'Русский', file: 'ru.json' },
