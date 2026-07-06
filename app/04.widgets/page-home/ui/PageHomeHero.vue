@@ -9,7 +9,7 @@
         height="1666"
         format="webp"
         sizes="100vw sm:100vw md:100vw"
-        quality="80"
+        preload
       />
       <div class="hero__overlay" />
     </div>
