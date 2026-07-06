@@ -153,6 +153,42 @@ npm run build
 
 ---
 
+## Commit Convention
+
+Commits follow a lightweight [Conventional Commits](https://www.conventionalcommits.org/) style, scoped to the FSD layer being touched:
+
+```
+<type>(<scope>): <description>
+```
+
+**Types**
+
+| Type | Use for |
+|---|---|
+| `feat` | new functionality |
+| `fix` | bug fix |
+| `refactor` | code change with no behavior change |
+| `style` | CSS / visual-only tweaks |
+| `docs` | documentation |
+| `chore` | config, dependencies, tooling |
+
+**Scope** — path to the affected FSD slice, e.g. `widgets/album-gallery`, `features/select-photo`, `shared/button`, `config`. Omit the scope for repo-wide changes.
+
+**Examples**
+
+```
+feat(widgets/album-gallery): add lightbox zoom
+fix(features/select-photo): fix selection reset on unmount
+style(shared/button): edit hover style
+refactor(entities/photo): simplify photo store
+docs: add CLAUDE.md
+chore(config): add favicons
+```
+
+> Earlier commit history predates this convention and uses a slightly different format (`type [scope]: description`).
+
+---
+
 ## Environment Variables
 
 Required for Phase 2+:
