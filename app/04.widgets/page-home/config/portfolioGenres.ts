@@ -1,6 +1,10 @@
 export interface GenrePhoto {
   src?: string
   alt?: string
+  // Реальные пиксельные размеры файла (как их отдаст будущий API/админка) —
+  // не размер отображения, тот считает сам компонент под свою вёрстку
+  width?: number
+  height?: number
 }
 
 export interface PortfolioGenre {
@@ -12,68 +16,68 @@ export interface PortfolioGenre {
 }
 
 const REPORTAGE_PHOTOS: GenrePhoto[] = [
-  { src: '/images/examples/reportage/img_1.jpg' },
-  { src: '/images/examples/reportage/img_2.jpg' },
-  { src: '/images/examples/reportage/img_3.jpg' },
-  { src: '/images/examples/reportage/img_4.jpg' },
-  { src: '/images/examples/reportage/img_5.jpg' },
-  { src: '/images/examples/reportage/img_6.jpg' },
-  { src: '/images/examples/reportage/img_7.jpg' },
-  { src: '/images/examples/reportage/img_8.jpg' },
-  { src: '/images/examples/reportage/img_9.jpg' },
-  { src: '/images/examples/reportage/img_10.jpg' }
+  { src: '/images/examples/reportage/img_1.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/reportage/img_2.jpg', width: 2000, height: 3000 },
+  { src: '/images/examples/reportage/img_3.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/reportage/img_4.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/reportage/img_5.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/reportage/img_6.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/reportage/img_7.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/reportage/img_8.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/reportage/img_9.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/reportage/img_10.jpg', width: 2000, height: 1333 }
 ]
 
 const STUDIO_PHOTOS: GenrePhoto[] = [
-  { src: '/images/examples/studio/img_1.jpg' },
-  { src: '/images/examples/studio/img_2.jpg' },
-  { src: '/images/examples/studio/img_3.jpg' },
-  { src: '/images/examples/studio/img_4.jpg' },
-  { src: '/images/examples/studio/img_5.jpg' },
-  { src: '/images/examples/studio/img_6.jpg' },
-  { src: '/images/examples/studio/img_7.jpg' },
-  { src: '/images/examples/studio/img_8.jpg' },
-  { src: '/images/examples/studio/img_9.jpg' },
-  { src: '/images/examples/studio/img_10.jpg' }
+  { src: '/images/examples/studio/img_1.jpg', width: 2000, height: 3000 },
+  { src: '/images/examples/studio/img_2.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/studio/img_3.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/studio/img_4.jpg', width: 2000, height: 3000 },
+  { src: '/images/examples/studio/img_5.jpg', width: 2000, height: 1332 },
+  { src: '/images/examples/studio/img_6.jpg', width: 2000, height: 3000 },
+  { src: '/images/examples/studio/img_7.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/studio/img_8.jpg', width: 2000, height: 3000 },
+  { src: '/images/examples/studio/img_9.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/studio/img_10.jpg', width: 2000, height: 3000 }
 ]
 
 const CREATIVE_PHOTOS: GenrePhoto[] = [
-  { src: '/images/examples/creative/img_1.jpg' },
-  { src: '/images/examples/creative/img_2.jpg' },
-  { src: '/images/examples/creative/img_3.jpg' },
-  { src: '/images/examples/creative/img_4.jpg' },
-  { src: '/images/examples/creative/img_5.jpg' },
-  { src: '/images/examples/creative/img_6.jpg' },
-  { src: '/images/examples/creative/img_7.jpg' },
-  { src: '/images/examples/creative/img_8.jpg' },
-  { src: '/images/examples/creative/img_9.jpg' },
-  { src: '/images/examples/creative/img_10.jpg' }
+  { src: '/images/examples/creative/img_1.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/creative/img_2.jpg', width: 2000, height: 3000 },
+  { src: '/images/examples/creative/img_3.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/creative/img_4.jpg', width: 2000, height: 3000 },
+  { src: '/images/examples/creative/img_5.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/creative/img_6.jpg', width: 2000, height: 3000 },
+  { src: '/images/examples/creative/img_7.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/creative/img_8.jpg', width: 2000, height: 3000 },
+  { src: '/images/examples/creative/img_9.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/creative/img_10.jpg', width: 2000, height: 1333 }
 ]
 
 const CHILDREN_PHOTOS: GenrePhoto[] = [
-  { src: '/images/examples/children/img_1.jpg' },
-  { src: '/images/examples/children/img_2.jpg' },
-  { src: '/images/examples/children/img_3.jpg' },
-  { src: '/images/examples/children/img_4.jpg' },
-  { src: '/images/examples/children/img_5.jpg' },
-  { src: '/images/examples/children/img_6.jpg' },
-  { src: '/images/examples/children/img_7.jpg' },
-  { src: '/images/examples/children/img_8.jpg' },
-  { src: '/images/examples/children/img_9.jpg' },
-  { src: '/images/examples/children/img_10.jpg' }
+  { src: '/images/examples/children/img_1.jpg', width: 2000, height: 3000 },
+  { src: '/images/examples/children/img_2.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/children/img_3.jpg', width: 2000, height: 3000 },
+  { src: '/images/examples/children/img_4.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/children/img_5.jpg', width: 2000, height: 3000 },
+  { src: '/images/examples/children/img_6.jpg', width: 2000, height: 3000 },
+  { src: '/images/examples/children/img_7.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/children/img_8.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/children/img_9.jpg', width: 2000, height: 3000 },
+  { src: '/images/examples/children/img_10.jpg', width: 2000, height: 1333 }
 ]
 
 const FAMILY_PHOTOS: GenrePhoto[] = [
-  { src: '/images/examples/family/img_1.jpg' },
-  { src: '/images/examples/family/img_2.jpg' },
-  { src: '/images/examples/family/img_3.jpg' },
-  { src: '/images/examples/family/img_4.jpg' },
-  { src: '/images/examples/family/img_5.jpg' },
-  { src: '/images/examples/family/img_6.jpg' },
-  { src: '/images/examples/family/img_7.jpg' },
-  { src: '/images/examples/family/img_8.jpg' },
-  { src: '/images/examples/family/img_9.jpg' },
-  { src: '/images/examples/family/img_10.jpg' }
+  { src: '/images/examples/family/img_1.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/family/img_2.jpg', width: 2000, height: 3000 },
+  { src: '/images/examples/family/img_3.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/family/img_4.jpg', width: 2000, height: 3000 },
+  { src: '/images/examples/family/img_5.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/family/img_6.jpg', width: 1815, height: 2723 },
+  { src: '/images/examples/family/img_7.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/family/img_8.jpg', width: 2000, height: 3000 },
+  { src: '/images/examples/family/img_9.jpg', width: 2000, height: 1333 },
+  { src: '/images/examples/family/img_10.jpg', width: 2000, height: 3000 }
 ]
 
 export const portfolioGenres: PortfolioGenre[] = [

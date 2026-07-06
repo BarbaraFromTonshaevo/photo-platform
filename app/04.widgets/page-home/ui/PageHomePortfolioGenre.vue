@@ -27,6 +27,8 @@
             v-if="photo.src"
             :src="photo.src"
             :alt="photo.alt ?? ''"
+            :width="photo.renderWidth"
+            :height="photo.renderHeight"
             loading="lazy"
             format="webp"
             quality="80"
@@ -42,11 +44,7 @@
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import gsap from 'gsap'
 import { useInViewport } from '~/01.shared/lib/useInViewport'
-
-export interface GenrePhoto {
-  src?: string
-  alt?: string
-}
+import type { GenrePhoto } from '../config/portfolioGenres'
 
 const props = defineProps<{
   index: number
@@ -58,7 +56,24 @@ const props = defineProps<{
 }>()
 
 const formattedIndex = computed(() => String(props.index).padStart(2, '0'))
-const loopPhotos = computed(() => [...props.photos, ...props.photos])
+
+// Лента капается по высоте вьюпорта — незачем запрашивать полное разрешение
+// исходника (у части фото реальная высота 3000px), только его пропорцию
+const RENDER_HEIGHT = 1000
+
+function withRenderSize(photo: GenrePhoto): GenrePhoto & { renderWidth?: number, renderHeight?: number } {
+  if (!photo.width || !photo.height) return photo
+  return {
+    ...photo,
+    renderWidth: Math.round((photo.width * RENDER_HEIGHT) / photo.height),
+    renderHeight: RENDER_HEIGHT,
+  }
+}
+
+const loopPhotos = computed(() => {
+  const sized = props.photos.map(withRenderSize)
+  return [...sized, ...sized]
+})
 
 const STRIP_SPEED = 100 // px/sec — постоянная скорость ленты независимо от ширины контента
 
