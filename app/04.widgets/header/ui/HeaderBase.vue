@@ -7,12 +7,14 @@
       <!-- Logo -->
       <NuxtLink to="/" class="header__logo" :aria-label="t('logoAriaLabel')">
         <NuxtImg
-          src="/images/logo.png"
+          src="/images/logo-icon.png"
           alt="Logo"
           width="60"
           height="60"
           class="header__logo-avatar"
           priority
+          format="webp"
+          quality="80"
         />
         <div class="header__logo-info">
           <span class="header__logo-name">{{ t('logoName') }}</span>

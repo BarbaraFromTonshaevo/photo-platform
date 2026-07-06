@@ -59,7 +59,6 @@
         loading="lazy"
         format="webp"
         sizes="50vw"
-        quality="80"
       />
     </div>
   </dialog>
