@@ -33,16 +33,15 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { portfolioGenres as genres } from '../config/portfolioGenres'
 import { useViewerStore } from '@entities/viewer'
 import { useHeaderZoneObserver } from '~/01.shared/lib/useHeaderZoneObserver'
 import { useLenis } from '@shared/lib/useLenis'
+import { useGsapScrollSync } from '~/01.shared/lib/useGsapScrollSync'
 
+useGsapScrollSync()
 const viewerStore = useViewerStore()
 const { setForcedHeaderTheme } = viewerStore
-
-gsap.registerPlugin(ScrollTrigger)
 
 const portfolioRef = ref<HTMLElement | null>(null)
 const slidesRef = ref<HTMLElement | null>(null)
@@ -84,7 +83,7 @@ onMounted(() => {
       invalidateOnRefresh: true,
       snap: {
         snapTo: 1 / (count - 1),
-        duration: { min: 0.2, max: 0.5 },
+        duration: { min: 0.2, max: 0.4 },
         ease: 'power2.inOut'
       },
       onUpdate: (self) => {

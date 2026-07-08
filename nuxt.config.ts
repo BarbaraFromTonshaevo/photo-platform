@@ -13,7 +13,7 @@ export default defineNuxtConfig({
             { name: 'description', content: 'Живые эмоции, естественный свет и внимание к деталям.' }
         ],
       link: [
-        { rel: 'icon', type: 'image/svg+xml', href: '/logo-rotated.svg' },
+        { rel: 'icon', type: 'image/svg+xml', href: '/logo-sakura.svg' },
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
         { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
         { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
@@ -103,6 +103,7 @@ export default defineNuxtConfig({
         '@vue/devtools-kit',
         'gsap',
         'gsap/ScrollTrigger',
+        'lenis',
         'swiper/modules',
         'swiper/vue',
       ],

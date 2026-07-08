@@ -48,10 +48,11 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import type { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useMatchMedia } from '@shared/lib/useMatchMedia'
+import { useGsapScrollSync } from '~/01.shared/lib/useGsapScrollSync'
 
-gsap.registerPlugin(ScrollTrigger)
+useGsapScrollSync()
 
 const imageRef = ref<HTMLElement | null>(null)
 const innerRef = ref<HTMLElement | null>(null)

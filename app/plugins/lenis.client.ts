@@ -1,29 +1,21 @@
 import Lenis from 'lenis'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 export default defineNuxtPlugin(() => {
-  gsap.registerPlugin(ScrollTrigger)
-
   const lenis = new Lenis({
-    // RAF управляется через gsap.ticker, чтобы ScrollTrigger
-    // получал позицию скролла синхронно с анимациями
     autoRaf: false,
   })
 
-  lenis.on('scroll', ScrollTrigger.update)
-
-  gsap.ticker.add((time) => {
-    lenis.raf(time * 1000)
+  let rafId = requestAnimationFrame(function loop(time){
+    lenis.raf(time)
+    rafId = requestAnimationFrame(loop)
   })
 
-  // Отключаем сглаживание лагов — иначе Lenis будет получать
-  // некорректное время при большом delta и дёргаться
-  gsap.ticker.lagSmoothing(0)
+  const stopDefaultRaf = () => cancelAnimationFrame(rafId)
 
   return {
     provide: {
       lenis,
+      lenisStopDefaultRaf: stopDefaultRaf,
     },
   }
 })

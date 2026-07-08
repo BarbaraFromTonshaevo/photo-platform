@@ -86,11 +86,6 @@ let stripTween: gsap.core.Tween | null = null
 // ставить на паузу — иначе все жанры анимируются одновременно даже вне экрана
 const isInViewport = useInViewport(slideRef)
 
-watch(isInViewport, (visible) => {
-  if (visible) stripTween?.play()
-  else stripTween?.pause()
-})
-
 function getInfoChildren() {
   return infoRef.value ? Array.from(infoRef.value.children) : []
 }
@@ -107,46 +102,42 @@ function resetInfo() {
   gsap.set(getInfoChildren(), { opacity: 0, y: 24 })
 }
 
-watch(
-  () => props.isActive,
-  (active) => {
-    if (active) animateIn()
-    else resetInfo()
-  }
-)
+// Текст жанра должен появиться один раз — в момент, когда жанр и активен,
+// и реально виден на экране — а дальше оставаться видимым всегда,
+// сколько бы раз пользователь ни уходил на другой жанр и не возвращался
+let hasRevealed = false
 
-// Реальная ширина фото известна только после загрузки <img> — ждём её,
-// чтобы измерить ленту по фактическим (а не предполагаемым) пропорциям
-function waitForImages(container: HTMLElement) {
-  const imgs = Array.from(container.querySelectorAll('img'))
-  return Promise.all(
-    imgs.map(
-      (img) =>
-        img.complete ||
-        new Promise<void>((resolve) => {
-          img.addEventListener('load', () => resolve(), { once: true })
-          img.addEventListener('error', () => resolve(), { once: true })
-        })
-    )
-  )
+function tryReveal() {
+  if (hasRevealed || !props.isActive || !isInViewport.value) return
+  hasRevealed = true
+  animateIn()
 }
 
+watch(isInViewport, (visible) => {
+  if (visible) stripTween?.play()
+  else stripTween?.pause()
+  tryReveal()
+})
+
+watch(() => props.isActive, tryReveal)
+
 onMounted(() => {
-  // Скрыть неактивные жанры сразу; первый (isActive=true) остаётся видимым
-  if (!props.isActive) resetInfo()
+  // Скрыть все жанры сразу — первый тоже должен проиграть анимацию появления,
+  // когда до него реально доскроллят, а не быть видимым с самого начала
+  resetInfo()
 
   if (!trackRef.value) return
-  waitForImages(trackRef.value).then(() => {
-    if (!trackRef.value) return
-    const halfWidth = trackRef.value.scrollWidth / 2
-    stripTween = gsap.to(trackRef.value, {
-      x: -halfWidth,
-      duration: halfWidth / STRIP_SPEED,
-      ease: 'none',
-      repeat: -1,
-      paused: !isInViewport.value
-    })
+  const halfWidth = trackRef.value.scrollWidth / 2
+
+  stripTween = gsap.to(trackRef.value, {
+    x: -halfWidth,
+    duration: halfWidth / STRIP_SPEED,
+    ease: 'none',
+    repeat: -1,
   })
+  if (!isInViewport.value) stripTween.pause()
+
+  tryReveal()
 })
 
 onUnmounted(() => {

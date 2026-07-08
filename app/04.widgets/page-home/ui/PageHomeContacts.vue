@@ -62,13 +62,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import type { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useSiteStore } from '@entities/site'
 import { useMatchMedia } from '@shared/lib/useMatchMedia'
+import { useGsapScrollSync } from '~/01.shared/lib/useGsapScrollSync'
 
-gsap.registerPlugin(ScrollTrigger)
+useGsapScrollSync()
 
 interface PriceItem {
   title: string
@@ -100,13 +101,14 @@ const telegramHandle = computed(() => {
 const leftColRef = ref<HTMLElement | null>(null)
 const formColRef = ref<HTMLElement | null>(null)
 const isMobile = useMatchMedia('(max-width: 480px)')
+const scrollTriggers: ScrollTrigger[] = []
 
 onMounted(() => {
   if (isMobile.value) return
 
   const priceItems = leftColRef.value?.querySelectorAll('.contacts__price-item')
   if (priceItems?.length) {
-    gsap.from(priceItems, {
+    const priceTween = gsap.from(priceItems, {
       opacity: 0,
       y: 24,
       duration: 0.7,
@@ -117,11 +119,12 @@ onMounted(() => {
         start: 'top 80%'
       }
     })
+    if (priceTween.scrollTrigger) scrollTriggers.push(priceTween.scrollTrigger)
   }
 
   const infoItems = leftColRef.value?.querySelectorAll('.contacts__info-item')
   if (infoItems?.length) {
-    gsap.from(infoItems, {
+    const infoTween = gsap.from(infoItems, {
       opacity: 0,
       y: 16,
       duration: 0.6,
@@ -132,8 +135,9 @@ onMounted(() => {
         start: 'top 75%'
       }
     })
+    if (infoTween.scrollTrigger) scrollTriggers.push(infoTween.scrollTrigger)
   }
-  gsap.from(formColRef.value, {
+  const formTween = gsap.from(formColRef.value, {
     opacity: 0,
     y: 48,
     duration: 1,
@@ -143,6 +147,12 @@ onMounted(() => {
       start: 'top 80%'
     }
   })
+  if (formTween.scrollTrigger) scrollTriggers.push(formTween.scrollTrigger)
+})
+
+onUnmounted(() => {
+  scrollTriggers.forEach((t) => t.kill())
+  scrollTriggers.length = 0
 })
 </script>
 
@@ -162,8 +172,8 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     gap: var(--space-7);
-    @include mobile{
-        gap: var(--space-5);
+    @include mobile {
+      gap: var(--space-5);
     }
   }
 
