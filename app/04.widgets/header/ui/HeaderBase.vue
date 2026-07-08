@@ -30,6 +30,7 @@
           :to="link.to"
           class="header__nav-link"
           active-class="is-active"
+          @click="onNavClick(link.to, $event)"
         >
           {{ t(link.labelKey) }}
         </NuxtLink>
@@ -50,7 +51,12 @@
         <LocaleToggle class="header__locale" />
         <span class="header__sep" aria-hidden="true" />
         <ThemeToggle class="header__theme" />
-        <ButtonBurger v-if="isLaptop" class="header__burger" :is-open="isMenuActive" @click="openMenu" />
+        <ButtonBurger
+          v-if="isLaptop"
+          class="header__burger"
+          :is-open="isMenuActive"
+          @click="openMenu"
+        />
       </div>
     </div>
     <HeaderMenu v-if="isLaptop" :is-active="isMenuActive" @close-menu="closeMenu" />
@@ -61,6 +67,7 @@
 import { useViewerStore } from '@entities/viewer'
 import { useSiteStore } from '@entities/site'
 import { useMatchMedia } from '@shared/lib/useMatchMedia'
+import { useScrollToSection } from '@shared/lib/useScrollToSection'
 
 const { t } = useI18n()
 const viewerStore = useViewerStore()
@@ -70,11 +77,18 @@ const { forcedHeaderTheme } = storeToRefs(viewerStore)
 const isLaptop = useMatchMedia('(max-width: 1365px)')
 
 const isMenuActive = ref(false)
-function openMenu(){
-    isMenuActive.value = true
+function openMenu() {
+  isMenuActive.value = true
 }
-function closeMenu(){
-    isMenuActive.value = false
+function closeMenu() {
+  isMenuActive.value = false
+}
+function onNavClick(link: string, event: MouseEvent) {
+  // Не мешаем открытию в новой вкладке/новом окне — обычные клики модификаторами
+  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+  event.preventDefault()
+  const id = link.split('#')[1] ?? ''
+  useScrollToSection(id)
 }
 </script>
 
@@ -87,7 +101,7 @@ function closeMenu(){
   --_shadow: none;
 
   &--forced-theme-dark {
-    --_color: oklch(0.925 0.010 84);
+    --_color: oklch(0.925 0.01 84);
     --_bg: oklch(0.185 0.008 72);
     --_border: oklch(0.34 0.012 76);
     --_shadow: var(--shadow-sm);
@@ -204,8 +218,8 @@ function closeMenu(){
       transform: scaleX(0);
       transition: transform var(--dur-fast) var(--ease);
     }
-    &:hover{
-        opacity: 1;
+    &:hover {
+      opacity: 1;
     }
     &:hover::after {
       transform: scaleX(1);
@@ -224,8 +238,8 @@ function closeMenu(){
     display: flex;
     align-items: center;
     gap: var(--space-3);
-    @include tablet-s{
-        display: none;
+    @include tablet-s {
+      display: none;
     }
   }
 
@@ -249,23 +263,23 @@ function closeMenu(){
     height: 18px;
     background: currentColor;
     opacity: 0.2;
-    @include tablet-s{
-        display: none;
+    @include tablet-s {
+      display: none;
     }
   }
 
-  &__locale{
-    @include tablet-s{
-        display: none;
+  &__locale {
+    @include tablet-s {
+      display: none;
     }
   }
-  &__theme{
-    @include tablet-s{
-        display: none;
+  &__theme {
+    @include tablet-s {
+      display: none;
     }
   }
 
-  &__burger{
+  &__burger {
     z-index: 5;
   }
 }

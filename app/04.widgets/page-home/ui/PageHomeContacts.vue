@@ -1,5 +1,5 @@
 <template>
-  <section id="contacts" class="contacts">
+  <section class="contacts">
     <div class="contacts__inner">
       <div class="contacts__label">Контакты</div>
 

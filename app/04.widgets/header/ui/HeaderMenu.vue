@@ -8,7 +8,7 @@
           :to="link.to"
           class="header-menu__nav-link"
           active-class="is-active"
-          @click="closeMenu"
+          @click="onNavClick(link.to, $event)"
         >
           <span class="header-menu__nav-num">{{ index + 1 }}</span> {{ t(link.labelKey) }}
         </NuxtLink>
@@ -68,7 +68,7 @@
 import { useSiteStore } from '@entities/site'
 import { gsap } from 'gsap'
 import { useLenis } from '@shared/lib/useLenis'
-
+import { useScrollToSection } from '@shared/lib/useScrollToSection'
 const lenis = useLenis()
 const props = defineProps<{
   isActive: boolean
@@ -219,6 +219,15 @@ function closeMenu() {
   )
 }
 
+function onNavClick(link: string, event: MouseEvent) {
+  closeMenu()
+  // Не мешаем открытию в новой вкладке/новом окне — обычные клики модификаторами
+  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+  event.preventDefault()
+  const id = link.split('#')[1] ?? ''
+  useScrollToSection(id)
+}
+
 watch(
   () => props.isActive,
   (newVal) => {
@@ -294,8 +303,8 @@ watch(
       padding-block: var(--space-7) var(--space-5);
     }
 
-    @include tablet-s{
-        width: 100%;
+    @include tablet-s {
+      width: 100%;
     }
   }
 
