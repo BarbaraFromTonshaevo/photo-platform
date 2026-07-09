@@ -13,6 +13,7 @@
                 :key="link.to"
                 :to="link.to"
                 class="footer__link"
+                @click="onNavClick(link.to, $event)"
               >
                 {{ t(link.labelKey) }}
               </NuxtLink>
@@ -70,10 +71,22 @@
 
 <script setup lang="ts">
 import { useSiteStore } from '@entities/site'
+import {useScrollToSection} from '@shared/lib/useScrollToSection'
+import { useLenis } from '@shared/lib/useLenis'
 
+const lenis = useLenis()
 const { t } = useI18n()
 const siteStore = useSiteStore()
 const currentYear = new Date().getFullYear()
+
+function onNavClick(link: string, event: MouseEvent) {
+  // Не мешаем открытию в новой вкладке/новом окне — обычные клики модификаторами
+  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+  event.preventDefault()
+  const id = link.split('#')[1] ?? ''
+  lenis.start()
+  useScrollToSection(id)
+}
 </script>
 
 <style lang="scss" scoped>
