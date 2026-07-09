@@ -118,6 +118,7 @@ function onNavClick(link: string, event: MouseEvent) {
   inset-block-start: 0;
   inset-inline: 0;
   z-index: 100;
+  padding-inline-end: var(--lock-scrollbar-w, 0px);
   height: var(--header-h);
   color: var(--_color);
   // background: var(--_bg);

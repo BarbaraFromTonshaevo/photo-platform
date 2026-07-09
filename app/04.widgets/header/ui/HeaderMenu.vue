@@ -58,7 +58,7 @@
         height="1536"
         loading="lazy"
         format="webp"
-        sizes="50vw"
+        sizes="sm:50vw md:50vw lg:50vw xl:50vw 2xl:50vw"
       />
     </div>
   </dialog>
@@ -87,7 +87,10 @@ function openMenu() {
   isAnimating = true
   menuRef.value?.showModal()
   lenis.stop()
+  const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+  document.documentElement.style.setProperty('--lock-scrollbar-w', `${scrollbarWidth}px`)
   document.documentElement.style.overflow = 'hidden'
+  document.documentElement.style.paddingRight = `${scrollbarWidth}px`
 
   const img = rightRef.value?.querySelector('.header-menu__image')
   const navLinks = leftRef.value?.querySelectorAll('.header-menu__nav-link')
@@ -153,10 +156,17 @@ function openMenu() {
   )
 }
 
+function releaseScrollLock() {
+  document.documentElement.style.overflow = ''
+  document.documentElement.style.paddingRight = ''
+  document.documentElement.style.removeProperty('--lock-scrollbar-w')
+}
+
 const emit = defineEmits(['closeMenu'])
 function closeMenu() {
   if (isAnimating) return
   isAnimating = true
+  releaseScrollLock()
 
   const img = rightRef.value?.querySelector('.header-menu__image')
   const navLinks = leftRef.value?.querySelectorAll('.header-menu__nav-link')
@@ -166,8 +176,6 @@ function closeMenu() {
 
   const tl = gsap.timeline({
     onComplete: () => {
-      // Закрываем dialog только после завершения анимации
-      document.documentElement.style.overflow = ''
       menuRef.value?.close()
       emit('closeMenu')
       isAnimating = false
@@ -225,6 +233,7 @@ function onNavClick(link: string, event: MouseEvent) {
   if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
   event.preventDefault()
   const id = link.split('#')[1] ?? ''
+  lenis.start()
   useScrollToSection(id)
 }
 
@@ -248,7 +257,7 @@ watch(
   inset: 0;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   color: var(--text);
   border: none;
@@ -276,6 +285,7 @@ watch(
     display: flex;
     flex-direction: column;
     width: 50%;
+    left: 1px;
     flex-shrink: 0;
     padding-block: var(--space-9) var(--space-7);
     padding-left: var(--gutter);
@@ -427,7 +437,7 @@ watch(
 
   &__close {
     position: absolute;
-    right: var(--gutter);
+    right: calc(var(--gutter) + 15px);
     top: 20px;
     z-index: 1;
     @include tablet-s {
