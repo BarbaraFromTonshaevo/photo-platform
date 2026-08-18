@@ -68,11 +68,14 @@ import { useViewerStore } from '@entities/viewer'
 import { useSiteStore } from '@entities/site'
 import { useMatchMedia } from '@shared/lib/useMatchMedia'
 import { useScrollToSection } from '@shared/lib/useScrollToSection'
+import { usePendingScroll } from '@shared/lib/usePendingScroll'
 
+const route = useRoute()
 const { t } = useI18n()
 const viewerStore = useViewerStore()
 const siteStore = useSiteStore()
 const { forcedHeaderTheme } = storeToRefs(viewerStore)
+const pendingScroll = usePendingScroll()
 
 const isLaptop = useMatchMedia('(max-width: 1365px)')
 
@@ -83,11 +86,21 @@ function openMenu() {
 function closeMenu() {
   isMenuActive.value = false
 }
-function onNavClick(link: string, event: MouseEvent) {
+async function onNavClick(link: string, event: MouseEvent) {
   // Не мешаем открытию в новой вкладке/новом окне — обычные клики модификаторами
   if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
   event.preventDefault()
+
   const id = link.split('#')[1] ?? ''
+
+  if (route.path !== '/') {
+    // Скролл произойдёт позже, внутри onEnter page-transition —
+    // пока страница невидима, сразу после того как её вёрстка стабилизируется
+    pendingScroll.value = { type: 'section', id }
+    await navigateTo('/')
+    return
+  }
+
   useScrollToSection(id)
 }
 </script>

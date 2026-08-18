@@ -47,11 +47,11 @@
               </a>
               <div class="footer__locations">
                 <div
-                    v-for="(location, index) of siteStore.contacts.location"
-                    :key="index"
-                    class="footer__location"
+                  v-for="(location, index) of siteStore.contacts.location"
+                  :key="index"
+                  class="footer__location"
                 >
-                    {{ location }}
+                  {{ location }}
                 </div>
               </div>
             </div>
@@ -71,20 +71,28 @@
 
 <script setup lang="ts">
 import { useSiteStore } from '@entities/site'
-import {useScrollToSection} from '@shared/lib/useScrollToSection'
-import { useLenis } from '@shared/lib/useLenis'
+import { useScrollToSection } from '@shared/lib/useScrollToSection'
+import { usePendingScroll } from '@shared/lib/usePendingScroll'
 
-const lenis = useLenis()
+const route = useRoute()
 const { t } = useI18n()
 const siteStore = useSiteStore()
 const currentYear = new Date().getFullYear()
+const pendingScroll = usePendingScroll()
 
-function onNavClick(link: string, event: MouseEvent) {
+async function onNavClick(link: string, event: MouseEvent) {
   // Не мешаем открытию в новой вкладке/новом окне — обычные клики модификаторами
   if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
   event.preventDefault()
   const id = link.split('#')[1] ?? ''
-  lenis.start()
+
+  if (route.path !== '/'){
+    // Скролл произойдёт позже, внутри onEnter page-transition —
+    // пока страница невидима, сразу после того как её вёрстка стабилизируется
+    pendingScroll.value = { type: 'section', id }
+    await navigateTo('/')
+    return
+  }
   useScrollToSection(id)
 }
 </script>
@@ -100,8 +108,8 @@ function onNavClick(link: string, event: MouseEvent) {
     margin-inline: auto;
     padding-inline: var(--gutter);
     padding-block: var(--space-9) var(--space-7);
-    @include tablet{
-        padding-block: var(--space-7) var(--space-5);
+    @include tablet {
+      padding-block: var(--space-7) var(--space-5);
     }
   }
 
@@ -111,9 +119,9 @@ function onNavClick(link: string, event: MouseEvent) {
     align-items: flex-start;
     gap: var(--space-8);
     padding-bottom: var(--space-8);
-    @include tablet{
-        flex-direction: column;
-        gap: var(--space-6);
+    @include tablet {
+      flex-direction: column;
+      gap: var(--space-6);
     }
   }
 
@@ -132,10 +140,10 @@ function onNavClick(link: string, event: MouseEvent) {
     display: flex;
     gap: var(--space-9);
     flex-shrink: 0;
-    @include tablet-s{
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: var(--space-7) var(--space-5);
+    @include tablet-s {
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-7) var(--space-5);
     }
   }
 
@@ -173,12 +181,12 @@ function onNavClick(link: string, event: MouseEvent) {
     }
   }
 
-  &__locations{
+  &__locations {
     display: flex;
     gap: var(--space-1) var(--space-4);
-    @include desktop{
-        flex-wrap: wrap;
-        flex-direction: column;
+    @include desktop {
+      flex-wrap: wrap;
+      flex-direction: column;
     }
   }
 
@@ -188,14 +196,14 @@ function onNavClick(link: string, event: MouseEvent) {
     font-family: var(--font-ui);
     font-size: var(--text-sm);
     color: var(--text-muted);
-    &:not(:last-child)::after{
-        content: '·';
+    &:not(:last-child)::after {
+      content: '·';
     }
-    @include desktop{
-        flex-wrap: wrap;
-        &::after{
-            display: none;
-        }
+    @include desktop {
+      flex-wrap: wrap;
+      &::after {
+        display: none;
+      }
     }
   }
 
@@ -206,9 +214,9 @@ function onNavClick(link: string, event: MouseEvent) {
     padding-top: var(--space-5);
     border-top: 1px solid var(--line);
     gap: var(--space-5);
-    @include mobile{
-        flex-direction: column;
-        gap: var(--space-2);
+    @include mobile {
+      flex-direction: column;
+      gap: var(--space-2);
     }
   }
 
@@ -216,8 +224,8 @@ function onNavClick(link: string, event: MouseEvent) {
     font-family: var(--font-ui);
     font-size: var(--text-xs);
     color: var(--text-muted);
-    @include mobile{
-        text-align: center;
+    @include mobile {
+      text-align: center;
     }
   }
 
@@ -227,8 +235,8 @@ function onNavClick(link: string, event: MouseEvent) {
     font-style: italic;
     color: var(--text-faint);
     text-align: end;
-    @include mobile{
-        text-align: center;
+    @include mobile {
+      text-align: center;
     }
   }
 }

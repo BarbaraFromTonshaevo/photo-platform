@@ -69,11 +69,15 @@ import { useSiteStore } from '@entities/site'
 import { gsap } from 'gsap'
 import { useLenis } from '@shared/lib/useLenis'
 import { useScrollToSection } from '@shared/lib/useScrollToSection'
+import { usePendingScroll } from '@shared/lib/usePendingScroll'
+
 const lenis = useLenis()
+const pendingScroll = usePendingScroll()
 const props = defineProps<{
   isActive: boolean
 }>()
 
+const route = useRoute()
 const { t } = useI18n()
 const siteStore = useSiteStore()
 const menuRef = ref<HTMLDialogElement | null>(null)
@@ -227,14 +231,25 @@ function closeMenu() {
   )
 }
 
-function onNavClick(link: string, event: MouseEvent) {
-  closeMenu()
+async function onNavClick(link: string, event: MouseEvent) {
   // Не мешаем открытию в новой вкладке/новом окне — обычные клики модификаторами
   if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
   event.preventDefault()
+
   const id = link.split('#')[1] ?? ''
+
+  if (route.path !== '/') {
+    // Кросс-страничный переход: скролл делает onEnter page-transition,
+    // пока новая страница ещё невидима — закрытие меню тут просто параллельная анимация
+    pendingScroll.value = { type: 'section', id }
+    closeMenu()
+    await navigateTo('/')
+    return
+  }
+
+  closeMenu()
   lenis.start()
-  useScrollToSection(id)
+  useScrollToSection(id, true)
 }
 
 watch(

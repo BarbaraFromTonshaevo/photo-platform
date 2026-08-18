@@ -50,5 +50,9 @@ export function useHeaderZoneObserver(
   onUnmounted(() => {
     observer?.disconnect()
     window.removeEventListener('resize', changeObserver)
+    // Секция может размонтироваться (переход на другую страницу), не успев
+    // "выехать" из зоны наблюдения — onLeave в таком случае никогда не сработает
+    // сам по себе, и forcedHeaderTheme навсегда останется висеть на прошлом значении
+    onLeave()
   })
 }
